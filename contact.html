@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تواصل معنا - كتب الفشن</title>
+    <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/book-236-444346.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #ff5e3a;
+            --grad: linear-gradient(90deg, #ff4e31, #ff8c31);
+            --bg: #0a0a0a;
+            --cart-count: "0";
+            
+            /* --- متغيرات الألوان --- */
+            --text-main: #ffffff;
+            --text-sec: #cccccc;
+            --header-bg: rgba(10, 10, 10, 0.95);
+            --card-bg: #111;
+            --border-color: #333;
+            --input-bg: #000;
+        }
+
+        body.light-mode {
+            --bg: #f4ecd8;
+            --text-main: #2c2520;
+            --text-sec: #5d534a;
+            --header-bg: rgba(244, 236, 216, 0.95);
+            --card-bg: rgba(255, 253, 240, 0.9);
+            --border-color: #8c7b6c;
+            --input-bg: rgba(232, 224, 197, 0.6);
+        }
+
+        /* --- تأثير ملمس الورق في الوضع النهاري --- */
+        body.light-mode .bg-grid::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+            opacity: 0.5;
+            mix-blend-mode: multiply;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); overflow-x: hidden; }
+
+        /* --- الخلفية --- */
+        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, var(--card-bg) 0%, var(--bg) 100%); perspective: 1000px; }
+        .grid-layer { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 60px 60px; transform: rotateX(50deg) rotateZ(-5deg); mask-image: radial-gradient(circle, black, transparent 85%); }
+
+        /* --- الهيدر --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: var(--header-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
+        .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+        .logo-txt { font-size: 28px; font-weight: 900; color: var(--primary); }
+        .logo-box { background: var(--grad); padding: 10px; border-radius: 10px; color: white; }
+
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--text-sec); text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        /* --- أيقونة السلة والعداد --- */
+        .cart-btn {
+            width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--card-bg);
+            display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;
+        }
+        .cart-btn::after {
+            content: var(--cart-count); position: absolute; top: -5px; right: -5px;
+            background: var(--primary); color: white; width: 20px; height: 20px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;
+        }
+
+        /* --- زر تبديل الثيم --- */
+        .theme-toggle {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-sec);
+            border: 1px solid var(--border-color);
+        }
+        .theme-toggle:hover { color: var(--primary); border-color: var(--primary); transform: rotate(15deg); }
+
+        .hamburger { display: none; flex-direction: column; cursor: pointer; color: var(--text-sec); }
+        .hamburger span { width: 25px; height: 3px; background: var(--text-sec); margin: 3px 0; transition: 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: rotate(-45deg) translate(-5px, 5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(45deg) translate(-5px, -5px); }
+
+        /* --- السلة الجانبية --- */
+        .cart-sidebar { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: var(--card-bg); border-left: 1px solid var(--border-color); z-index: 200; transition: 0.3s ease; padding: 20px; overflow-y: auto; }
+        .cart-sidebar.open { right: 0; }
+        .cart-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .cart-item img { width: 50px; height: 70px; object-fit: cover; border-radius: 5px; }
+        .cart-item-details { flex: 1; }
+        .cart-item-title { font-size: 14px; font-weight: bold; }
+        .cart-item-price { color: var(--primary); font-size: 13px; }
+        .remove-item { color: #ff4e31; cursor: pointer; transition: 0.3s; }
+        .remove-item:hover { transform: scale(1.2); }
+
+        /* --- محتوى التواصل --- */
+        .contact { padding: 120px 5% 50px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .grad-txt { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .contact-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .info-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 15px; padding: 30px; transition: 0.3s; }
+        .info-card i { font-size: 40px; color: var(--primary); margin-bottom: 15px; }
+        .info-card a { color: var(--primary); text-decoration: none; }
+
+        /* --- زر النسخ --- */
+        .copy-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-sec);
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-right: 10px;
+            transition: 0.3s;
+        }
+        .copy-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .btn { background: var(--grad); border: none; padding: 15px 40px; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 20px; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 78, 49, 0.4); }
+
+        /* --- مودال إتمام الطلب --- */
+        #checkout-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
+        .modal-content { background:var(--card-bg); padding:30px; border-radius:20px; border:1px solid var(--border-color); width:90%; max-width:400px; }
+        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); outline: none; }
+        .modal-content textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); outline: none; resize: none; }
+        
+        select option {
+            background-color: #111;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 10px 20px; }
+            .logo-txt { font-size: 22px; }
+            .nav-links { 
+                position: fixed; 
+                top: 70px; 
+                left: -100%; 
+                width: 100%; 
+                height: calc(100vh - 70px); 
+                background: var(--header-bg); 
+                flex-direction: column; 
+                align-items: center; 
+                justify-content: center; 
+                padding: 20px; 
+                transition: 0.3s; 
+                gap: 30px;
+            }
+            .nav-links a { font-size: 24px; }
+            .nav-links.active { left: 0; }
+            .hamburger { display: flex; }
+        }
+
+        /* --- Animations (تأثيرات الحركة) --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { animation: fadeInDown 0.8s ease-out; }
+        .contact h1 { animation: fadeInUp 0.8s ease-out; }
+        .info-card { animation: fadeInUp 0.8s ease-out both; }
+        .info-card:nth-child(1) { animation-delay: 0.2s; }
+        .info-card:nth-child(2) { animation-delay: 0.4s; }
+        .info-card:nth-child(3) { animation-delay: 0.6s; }
+
+        /* --- Preloader --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 999999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255, 94, 58, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body.loaded #preloader { opacity: 0; visibility: hidden; }
+    </style>
+</head>
+<body>
+    <!-- شاشة التحميل -->
+    <div id="preloader"><div class="loader"></div></div>
+
+    <div class="bg-grid"><div class="grid-layer"></div></div>
+
+    <header class="header">
+        <a href="index.html" class="logo">
+            <span class="logo-txt">كتب الفشن</span>
+            <div class="logo-box"><i class="fas fa-book-open"></i></div>
+        </a>
+        
+        <nav class="nav-links" id="nav-menu">
+            <a href="index.html">الرئيسية</a>
+            <a href="index22.html">المتجر</a>
+            <a href="contact.html" class="active">تواصل معنا</a>
+        </nav>
+
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="theme-toggle" id="theme-toggle"><i class="fas fa-sun"></i></div>
+            <div class="cart-btn" id="cart-btn"><i class="fas fa-shopping-cart"></i></div>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary);">سلتك</h2>
+            <i class="fas fa-times" id="close-cart" style="cursor: pointer;"></i>
+        </div>
+        <div id="cart-items"></div>
+        <div id="cart-total" style="font-weight: bold; margin: 20px 0; border-top: 1px solid var(--border-color); pt-20px;">المجموع: 0$</div>
+        <button class="btn" id="checkout-start">إتمام الطلب الآن</button>
+    </div>
+
+    <div id="checkout-modal">
+        <div class="modal-content">
+            <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;">بيانات الاستلام 🚚</h2>
+            <input type="text" id="cust-name" placeholder="الاسم الثلاثي">
+            <input type="number" id="cust-age" placeholder="العمر">
+            <input type="text" id="cust-address" placeholder="العنوان بالتفصيل (محافظة، مدينة، شارع)">
+            <input type="tel" id="cust-phone" placeholder="رقم الواتساب (11 رقم)">
+            <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)" rows="3"></textarea>
+            <select id="payment-method">
+                <option value="" disabled selected>اختر طريقة الدفع</option>
+                <option value="كاش عند الاستلام">💵 كاش عند الاستلام</option>
+                <option value="فودافون كاش">📱 فودافون كاش</option>
+            </select>
+            <button onclick="confirmFinalOrder()" class="btn">تأكيد الطلب عبر واتساب</button>
+            <p onclick="closeCheckout()" style="text-align:center; margin-top:15px; cursor:pointer; color:#666; font-size:14px;">إلغاء</p>
+        </div>
+    </div>
+
+    <main class="contact">
+        <h1>تواصل <span class="grad-txt">معنا</span></h1>
+        <div class="contact-info">
+            <div class="info-card">
+                <i class="fas fa-phone"></i>
+                <h3>الهاتف</h3>
+                <p style="display: flex; align-items: center; justify-content: center;">
+                    <a href="tel:01158606601">01158606601</a>
+                    <button class="copy-btn" onclick="copyPhoneNumber('01158606601')">
+                        <i class="fas fa-copy"></i> نسخ
+                    </button>
+                </p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-whatsapp"></i>
+                <h3>واتساب</h3>
+                <p><a href="https://wa.me/201158606601" target="_blank">راسلنا الآن</a></p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>الموقع</h3>
+                <p>مصر، بنى سويف، الفشن، حى بحرى</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCart = document.getElementById('close-cart');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalDisplay = document.getElementById('cart-total');
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        let cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+
+        // تحديث واجهة السلة
+        function updateCartUI() {
+            cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">السلة فارغة (❁´◡`❁)</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.image}">
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${item.title}</div>
+                                <div class="cart-item-price">${item.price}$</div>
+                            </div>
+                            <i class="fas fa-trash remove-item" onclick="handleRemove(event, ${index})"></i>
+                        </div>`;
+                });
+            }
+            cartTotalDisplay.textContent = `المجموع: ${total}$`;
+            document.documentElement.style.setProperty('--cart-count', `"${cart.length}"`);
+        }
+
+        // الحذف الذكي
+        window.handleRemove = function(event, index) {
+            event.stopPropagation();
+            cart.splice(index, 1);
+            localStorage.setItem('fashon_cart', JSON.stringify(cart));
+            updateCartUI();
+        };
+
+        // التحكم بالسلة والقائمة
+        cartBtn.onclick = () => cartSidebar.classList.add('open');
+        closeCart.onclick = () => cartSidebar.classList.remove('open');
+        hamburger.onclick = (e) => { 
+            e.stopPropagation(); 
+            navMenu.classList.toggle('active'); 
+            hamburger.classList.toggle('open');
+        };
+
+        document.onclick = (e) => {
+            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target)) {
+                cartSidebar.classList.remove('open');
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('open');
+            }
+        };
+
+        // إتمام الطلب
+        document.getElementById('checkout-start').onclick = () => {
+            if(cart.length === 0) return alert("السلة فارغة!");
+            document.getElementById('checkout-modal').style.display = 'flex';
+        };
+
+        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
+
+        function confirmFinalOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const age = document.getElementById('cust-age').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const notes = document.getElementById('cust-notes').value.trim();
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            if (name.split(' ').length < 3) return alert("يرجى كتابة الاسم ثلاثياً");
+            if (!age || age < 5 || age > 90) return alert("يرجى إدخال عمر صحيح");
+            if (address.length < 10) return alert("يرجى كتابة العنوان بالتفصيل");
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم هاتف مصري غير صحيح");
+            if (!paymentMethod) return alert("يرجى اختيار طريقة الدفع");
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+            let msg = `🚀 *طلب جديد من صفحة التواصل*\n\n👤 *الاسم:* ${name}\n🎂 *العمر:* ${age} سنة\n📍 *العنوان:* ${address}\n📞 *الهاتف:* ${phone}\n`;
+            if(notes) msg += `📝 *ملاحظات:* ${notes}\n`;
+            msg += `💳 *طريقة الدفع:* ${paymentMethod}\n\n📦 *الكتب:*\n`;
+            let total = 0;
+            cart.forEach((item, i) => { 
+                msg += `${i+1}. ${item.title} (${item.price}$)\n`; 
+                total += item.price;
+            });
+            msg += `\n💰 *الإجمالي: ${total}$*`;
+
+            setTimeout(() => {
+                window.open(`https://wa.me/201158606601?text=${encodeURIComponent(msg)}`, '_blank');
+                closeCheckout();
+            }, 1000);
+        }
+
+        // دالة نسخ رقم الهاتف
+        function copyPhoneNumber(number) {
+            navigator.clipboard.writeText(number).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم النسخ!',
+                    text: 'تم نسخ الرقم للحافظة بنجاح 📋',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+        }
+
+        updateCartUI();
+        window.addEventListener('storage', () => updateCartUI());
+
+        // --- الوضع النهاري (Light Mode) ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        // تحميل الثيم المحفوظ
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        // --- إخفاء شاشة التحميل ---
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كتب الفشن</title>
+    <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/book-236-444346.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #ff5e3a;
+            --grad: linear-gradient(90deg, #ff4e31, #ff8c31);
+            --cart-count: '0';
+            
+            /* --- الوضع الافتراضي: داكن (مثل الرئيسية) --- */
+            --bg: #0a0a0a;
+            --text-main: #ffffff;
+            --text-sec: #cccccc;
+            --header-bg: rgba(10, 10, 10, 0.95);
+            --card-bg: #1a1a1a;
+            --sidebar-bg: #111;
+            --border-color: #333;
+            --input-bg: #111;
+        }
+
+        /* --- الوضع النهاري (عتيق) --- */
+        body.light-mode {
+            --bg: #f4ecd8;
+            --text-main: #2c2520;
+            --text-sec: #5d534a;
+            --header-bg: rgba(244, 236, 216, 0.95);
+            --card-bg: rgba(255, 253, 240, 0.9);
+            --sidebar-bg: #f4ecd8;
+            --border-color: #8c7b6c;
+            --input-bg: rgba(232, 224, 197, 0.6);
+        }
+
+        /* --- تأثير ملمس الورق في الوضع النهاري --- */
+        body.light-mode .bg-grid::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+            opacity: 0.5;
+            mix-blend-mode: multiply;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- لمسة احترافية: شريط تمرير مخصص --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020202; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* --- نضافة الخلفية (الشبكة المائلة) --- */
+        /* --- نضافة الخلفية (الشبكة المائلة) --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle 600px at var(--x, 50%) var(--y, 50%), var(--input-bg), var(--bg));
+            perspective: 1000px;
+        }
+
+        .grid-layer {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image:
+                linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(50deg) rotateZ(-5deg);
+            mask-image: radial-gradient(circle, black, transparent 85%);
+            will-change: transform;
+        }
+
+        /* --- الهيدر (Responsive Navbar) --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo-txt {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            transition: 0.3s;
+        }
+
+        .logo:hover .logo-txt {
+            color: #ff8c31;
+        }
+
+        .logo-box {
+            background: var(--grad);
+            padding: 10px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .logo:hover .logo-box {
+            transform: scale(1.1);
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search {
+            position: relative;
+            width: 400px;
+            max-width: 100%;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-main);
+            text-align: right;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(255, 94, 58, 0.5);
+        }
+
+        .search i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--grad);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cart-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .cart-btn:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .cart-btn::before {
+            content: var(--cart-count);
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-sec);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 5px);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -5px);
+        }
+
+        /* --- قائمة الموبايل (Mobile Menu) --- */
+        .mobile-menu {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px);
+            background: var(--header-bg);
+            z-index: 99;
+            transform: translateX(-100%);
+            transition: 0.3s ease;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .mobile-menu a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--primary);
+        }
+
+        /* --- إعدادات القائمة --- */
+        .menu-settings {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .menu-settings h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .setting-item { margin-bottom: 20px; }
+        .setting-item label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; color: var(--text-main); }
+        
+        .theme-options { display: flex; gap: 10px; }
+        .theme-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .theme-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        
+        select.font-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* --- السلة (Cart Sidebar) --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid var(--border-color);
+            z-index: 200;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto;
+            padding: 25px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .close-cart {
+            width: 32px;
+            height: 32px;
+            background: var(--input-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-sec);
+            transition: 0.3s;
+        }
+
+        .close-cart:hover {
+            background: var(--primary);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .cart-items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .cart-items::-webkit-scrollbar { width: 4px; }
+        .cart-items::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .cart-item {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .cart-item:hover {
+            background: var(--border-color);
+            border-color: var(--text-sec);
+            transform: translateX(-3px);
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .cart-item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cart-item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .cart-item-type {
+            color: #888;
+            font-size: 11px;
+            background: var(--border-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            align-self: flex-start;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .remove-item {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 68, 68, 0.1);
+            color: #ff4444;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 12px;
+        }
+
+        .remove-item:hover {
+            background: #ff4444;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .cart-total {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--grad);
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 78, 49, 0.3);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 94, 58, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 94, 58, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 94, 58, 0); }
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* --- محتوى الهيرو (التركيز على الموبايل) --- */
+        .hero {
+            height: 45vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            margin-top: 80px;
+            /* لتجنب التداخل مع الهيدر الثابت */
+        }
+
+        .hero-inner {
+            max-width: 800px;
+        }
+
+        .badge {
+            background: rgba(255, 87, 34, 0.1);
+            color: #ff8c31;
+            padding: 6px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 87, 34, 0.2);
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.2;
+            letter-spacing: -1px; /* لمسة احترافية للعناوين */
+            margin-bottom: 15px;
+        }
+
+        .grad-txt {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: var(--text-sec);
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* --- المتجر (Store Section) --- */
+        .store {
+            padding: 50px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .store h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-sec);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background: var(--card-bg); /* خلفية شبه شفافة */
+            backdrop-filter: blur(10px); /* تأثير الزجاج */
+            border: 1px solid var(--border-color); /* حدود دقيقة جداً */
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 94, 58, 0.5);
+            box-shadow: 0 15px 30px rgba(255, 94, 58, 0.15);
+        }
+
+        .card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .book-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-rating {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            color: #ffcc00;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .card-content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-cat {
+            background: rgba(255, 94, 58, 0.151);
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--text-main);
+            line-height: 1.4;
+            /* إزالة nowrap للسماح للنص بالنزول لسطر جديد */
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* يظهر سطرين فقط ثم يضع نقاط إذا كان العنوان طويلاً جداً */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 28px; /* توحيد الارتفاع لكي تكون البطاقات متساوية */
+        }
+
+        .card-author {
+            color: var(--text-sec);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 12px;
+            border: 1px solid transparent;
+            text-align: right;
+        }
+
+        .btn-pdf {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-sec);
+        }
+
+        .btn-pdf:hover {
+            background: var(--border-color);
+            border-color: var(--text-sec);
+            color: var(--text-main);
+        }
+
+        .btn-paper {
+            background: var(--grad);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 78, 49, 0.2);
+        }
+
+        .btn-paper:hover {
+            box-shadow: 0 8px 20px rgba(255, 78, 49, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .price-tag {
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        /* --- التحكم (الزر فقط) --- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--grad);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 78, 49, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 78, 49, 0.5);
+        }
+
+        /* --- تنسيقات الأخطاء في الحقول --- */
+        .input-error {
+            border-color: #ff4e31 !important;
+            animation: shake 0.3s;
+        }
+        .input-error::placeholder {
+            color: #ff4e31;
+            font-weight: bold;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(5px); }
+            50% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* --- Loading Spinner --- */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- تأثير شعاع البرق (Lightning Ray) --- */
+        .lightning-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .lightning-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transform: skewX(-20deg);
+            z-index: 2;
+        }
+        .lightning-btn.zap::after {
+            animation: lightning-move 0.4s ease-in-out;
+        }
+        @keyframes lightning-move { 0% { left: -150%; } 100% { left: 150%; } }
+        .lightning-btn.zap { animation: flash-impact 0.3s ease-out; }
+        @keyframes flash-impact { 50% { box-shadow: 0 0 20px 5px rgba(255,255,255,0.6); background: #fff; color: #000; border-color: #fff; } }
+
+        /* --- خط فاصل احترافي (Separator Line) --- */
+        .separator-line {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 94, 58, 0.5), transparent);
+            margin: 20px 0;
+            opacity: 0.5;
+        }
+
+        /* --- تأثيرات الدخول المتحركة (Animations) --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { animation: fadeInDown 0.8s ease-out; }
+        .hero, .store { animation: fadeInUp 1s ease-out; }
+        
+        .book-card { animation: fadeInUp 0.8s ease-out both; }
+        .book-card:nth-child(1) { animation-delay: 0.1s; }
+        .book-card:nth-child(2) { animation-delay: 0.2s; }
+        .book-card:nth-child(3) { animation-delay: 0.3s; }
+        .book-card:nth-child(n+4) { animation-delay: 0.4s; }
+
+        /* --- زر الصعود للأعلى في الهيدر --- */
+        .scroll-top-btn {
+            width: 28px; height: 28px; /* حجم صغير جداً */
+            background: var(--grad);
+            color: white;
+            border-radius: 50%;
+            display: none; /* مخفي افتراضياً */
+            align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            box-shadow: 0 4px 10px rgba(255, 78, 49, 0.3);
+            animation: fadeInUp 0.3s ease;
+        }
+        .scroll-top-btn:hover { transform: translateY(-2px); }
+
+        /* --- تأثير شعاع البرق عند الصعود (Scroll Zap) --- */
+        .scroll-zap-beam {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8), 0 0 50px 10px var(--primary);
+            z-index: 999999;
+            pointer-events: none;
+            opacity: 0;
+        }
+        @keyframes beam-up {
+            0% { transform: translateX(-50%) scaleY(0); transform-origin: bottom; opacity: 1; }
+            50% { transform: translateX(-50%) scaleY(1); transform-origin: bottom; opacity: 1; }
+            100% { transform: translateX(-50%) scaleY(1); transform-origin: top; opacity: 0; }
+        }
+
+        /* --- شريط التقدم (Scroll Progress) --- */
+        .progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 99999;
+            background: transparent;
+        }
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #ff0000, #ffd700);
+            box-shadow: 0 0 10px #ff0000, 0 0 20px #ffd700;
+            border-radius: 0 2px 2px 0;
+            transition: width 0.1s;
+        }
+
+        /* --- تنسيق القائمة المنسدلة (Select) --- */
+        select option {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 10px;
+        }
+
+        /* --- Quantity Controls --- */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            background: var(--input-bg);
+            padding: 3px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+        .qty-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .qty-plus { background-color: #00c851; } /* Green */
+        .qty-plus:hover { background-color: #007e33; }
+        .qty-minus { background-color: #ff4444; } /* Red */
+        .qty-minus:hover { background-color: #cc0000; }
+        .qty-display { font-size: 13px; font-weight: bold; min-width: 18px; text-align: center; color: var(--text-main); }
+
+        /* --- Preloader --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 999999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255, 94, 58, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body.loaded #preloader { opacity: 0; visibility: hidden; }
+
+        /* --- زر تفريغ السلة --- */
+        .clear-cart-btn {
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .clear-cart-btn:hover { background: #ff4444; color: white; }
+
+        /* --- ضبط الموبايل (Responsive Fix) --- */
+        @media (max-width: 768px) {
+            .logo-txt {
+                font-size: 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            /* إخفاء البحث في الموبايل للبساطة، أو يمكن إضافته لاحقًا */
+            .header {
+                padding: 10px 20px;
+            }
+
+            .hero {
+                margin-top: 70px;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .filters {
+                gap: 10px;
+            }
+
+            .book-card {
+                max-width: 100%;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- شاشة التحميل -->
+    <div id="preloader"><div class="loader"></div></div>
+    <!-- شريط التقدم -->
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+
+    <div class="bg-grid">
+        <div class="grid-layer"></div>
+    </div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-txt">كتب الفشن</span>
+            <div class="logo-box"><i class="fas fa-book-open"></i></div>
+        </div>
+        <div class="nav-center">
+            <div class="search">
+                <input type="text" id="search-input" placeholder="ابحث عن كتابك...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="index22.html">المتجر</a>
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل معنا</a>
+            </nav>
+            <!-- زر الصعود للأعلى -->
+            <div class="scroll-top-btn" id="scrollTopBtn">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="cart-btn" id="cart-btn"><i class="fas fa-shopping-cart"></i></div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- قائمة قائمة الموبايل -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html">الرئيسية</a>
+        <a href="index22.html">المتجر</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">تواصل معنا</a>
+        
+        <div class="menu-settings">
+            <h3>⚙️ إعدادات العرض</h3>
+            
+            <div class="setting-item">
+                <label>الإضاءة</label>
+                <div class="theme-options">
+                    <button class="theme-btn" id="btn-old" onclick="setTheme('light')">📜 عتيق</button>
+                    <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label>حجم الخط</label>
+                <input type="range" min="14" max="22" value="16" id="font-size-slider" oninput="setFontSize(this.value)">
+            </div>
+
+            <div class="setting-item">
+                <label>نوع الخط</label>
+                <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                    <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
+                    <option value="'Amiri', serif">أميري (نسخ)</option>
+                    <option value="'Cairo', sans-serif">كايرو (حديث)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- السلة (Cart Sidebar) -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2 class="cart-title">السلة</h2>
+            <i class="fas fa-times close-cart" id="close-cart"></i>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="empty-cart">السلة فارغة</p>
+        </div>
+        <div class="cart-total" id="cart-total">المجموع: 0$</div>
+        <button class="clear-cart-btn" onclick="clearCart()">تفريغ السلة 🗑️</button>
+        <button class="checkout-btn">الدفع</button>
+    </div>
+
+    <br><br><br>
+
+    <div class="separator-line"></div> <!-- خط فاصل جمالي -->
+
+    <section class="store" id="store">
+        <h2>المتجر</h2>
+        <div class="filters">
+            <button class="filter-btn active" data-category="all">الكل</button>
+            <button class="filter-btn" data-category="روايات">روايات</button>
+            <button class="filter-btn" data-category="تعليمية">تعليمية</button>
+            <button class="filter-btn" data-category="دينية">دينية</button>
+        </div>
+        <div class="books-grid" id="books-grid">
+            <!-- الكتب ستُضاف هنا عبر JavaScript -->
+        </div>
+    </section>
+    <script>
+        // --- 1. تعريف العناصر الأساسية ---
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCart = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const checkoutBtn = document.querySelector('.checkout-btn');
+        const searchInput = document.getElementById('search-input');
+        const booksGrid = document.getElementById('books-grid');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        // --- شريط التقدم وتأثير Parallax ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("myBar").style.width = scrolled + "%";
+
+            // تأثير Parallax للخلفية (تحريك الشبكة ببطء عند التمرير)
+            const gridLayer = document.querySelector('.grid-layer');
+            gridLayer.style.transform = `rotateX(50deg) rotateZ(-5deg) translateY(${winScroll * 0.25}px)`;
+
+            // إظهار/إخفاء زر الصعود للأعلى
+            if (winScroll > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        });
+
+        // تفعيل زر الصعود مع تأثير البرق
+        scrollTopBtn.addEventListener('click', () => {
+            // 1. إنشاء الشعاع
+            const beam = document.createElement('div');
+            beam.className = 'scroll-zap-beam';
+            beam.style.animation = 'beam-up 0.6s ease-in-out forwards'; // سرعة مناسبة للصعود
+            document.body.appendChild(beam);
+
+            // 2. الصعود للأعلى
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 3. حذف الشعاع بعد انتهاء الحركة
+            setTimeout(() => beam.remove(), 600);
+        });
+
+        // تأثير الإضاءة التفاعلي مع الماوس
+        document.addEventListener('mousemove', (e) => {
+            document.documentElement.style.setProperty('--x', e.clientX + 'px');
+            document.documentElement.style.setProperty('--y', e.clientY + 'px');
+        });
+
+        // --- 2. الربط مع الذاكرة المحلية ---
+        let cart = [];
+        try {
+            // محاولة قراءة البيانات بأمان
+            cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+        } catch (e) {
+            cart = []; // في حالة تلف البيانات، ابدأ بسلة فارغة
+        }
+
+        // --- 3. إدارة القوائم والسلة ---
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+        });
+
+        cartBtn.addEventListener('click', () => cartSidebar.classList.add('open'));
+        closeCart.addEventListener('click', () => cartSidebar.classList.remove('open'));
+
+        // تحسين إغلاق السلة: تغلق فقط عند النقر خارجها تماماً
+        document.addEventListener('click', (e) => {
+            if (cartSidebar.classList.contains('open') &&
+                !cartSidebar.contains(e.target) &&
+                !cartBtn.contains(e.target)) {
+                cartSidebar.classList.remove('open');
+            }
+        });
+
+        // تفعيل زر الدفع
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'السلة فارغة!',
+                    text: 'أضف بعض الكتب أولاً.',
+                    confirmButtonText: 'حسنًا'
+                });
+                return;
+            }
+            document.getElementById('checkout-modal').style.display = 'flex';
+        });
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').style.display = 'none';
+        }
+
+        // --- 4. وظائف السلة ---
+        function addToCart(btn, title, price, image, type) {
+            if (btn.classList.contains('loading') || btn.classList.contains('zap')) return;
+            
+            // تشغيل تأثير البرق
+            btn.classList.add('zap');
+            
+            setTimeout(() => {
+                const originalContent = btn.innerHTML;
+                const originalStyle = btn.style.justifyContent;
+                
+                btn.classList.add('loading');
+                btn.style.justifyContent = 'center';
+                btn.innerHTML = '<div class="spinner"></div>';
+
+                setTimeout(() => {
+                    const existingItem = cart.find(item => item.title === title && item.type === type);
+                    if (existingItem) {
+                        existingItem.quantity = (existingItem.quantity || 1) + 1;
+                    } else {
+                        cart.push({ title, price, image, type, quantity: 1 });
+                    }
+                    saveCartToStorage();
+                    updateCart();
+                    showNotification(title, type);
+                    
+                    btn.innerHTML = originalContent;
+                    btn.style.justifyContent = originalStyle;
+                    btn.classList.remove('loading');
+                    btn.classList.remove('zap');
+                }, 600);
+            }, 300);
+        }
+
+        // الدالة الذكية للحذف (تمنع إغلاق السلة)
+        window.handleRemove = function (event, index) {
+            event.stopPropagation(); // منع وصول النقرة للخلفية وإغلاق السلة
+            cart.splice(index, 1);
+            saveCartToStorage();
+            updateCart();
+        };
+
+        // دالة تحديث الكمية
+        window.updateItemQuantity = function(event, index, change) {
+            event.stopPropagation(); // منع إغلاق السلة عند النقر
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + change;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                saveCartToStorage();
+                updateCart();
+            }
+        };
+
+        // دالة تفريغ السلة
+        window.clearCart = function() {
+            if (cart.length > 0 && confirm('هل أنت متأكد من حذف جميع الكتب من السلة؟')) {
+                cart = [];
+                saveCartToStorage();
+                updateCart();
+            }
+        };
+
+        function saveCartToStorage() {
+            try {
+                localStorage.setItem('fashon_cart', JSON.stringify(cart));
+            } catch (e) {
+                console.error("فشل حفظ السلة:", e);
+                // يمكن إضافة تنبيه للمستخدم هنا إذا كانت الذاكرة ممتلئة
+            }
+        }
+
+        function updateCart() {
+            // نضمن دائماً مزامنة البيانات قبل العرض
+            try {
+                cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+            } catch (e) {
+                cart = [];
+            }
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="empty-cart">  السلة فارغة </p>';
+            } else {
+                cart.forEach((item, index) => {
+                    item.quantity = item.quantity || 1;
+                    total += item.price * item.quantity;
+                    cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.title}">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-type">${item.type === 'paper' ? 'ورقي' : 'PDF'}</div>
+                            <div class="cart-item-price">${item.price}$</div>
+                            <div class="quantity-controls">
+                                <button class="qty-btn qty-minus" onclick="updateItemQuantity(event, ${index}, -1)">-</button>
+                                <span class="qty-display">${item.quantity}</span>
+                                <button class="qty-btn qty-plus" onclick="updateItemQuantity(event, ${index}, 1)">+</button>
+                            </div>
+                        </div>
+                        <i class="fas fa-trash remove-item" onclick="handleRemove(event, ${index})"></i>
+                    </div>
+                `;
+                });
+            }
+            cartTotal.innerHTML = `<span>المجموع</span> <span style="color:var(--primary)">${total}$</span>`;
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            document.documentElement.style.setProperty('--cart-count', `"${count}"`);
+        }
+
+        function showNotification(title, type) {
+            const notification = document.createElement('div');
+            notification.textContent = `${title} تم إضافته للسلة!`;
+            notification.style.cssText = "position:fixed; top:20px; right:20px; background:#ff5e3a; color:white; padding:10px 20px; border-radius:5px; z-index:1000; opacity:0.9;";
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // --- 5. بيانات الكتب وعرضها ---
+        const books = [
+            { id: 1, title: 'الكتاب مقابل السجائر', author: 'جورج أورويل', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', rating: 4, categoryLabel: 'روايات' },
+            { id: 2, title: 'سبل تعزيز مبيعات الكتب', author: 'خبير مبيعات', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 3, categoryLabel: 'تعليمية' },
+            { id: 3, title: 'كنز الطالب', author: 'مؤلف ديني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', rating: 5, categoryLabel: 'دينية' },
+            { id: 4, title: 'البرمجة الأساسية', author: 'مؤلف تقني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 4, categoryLabel: 'تعليمية' },
+            { id: 5, title: 'رواية الغموض', author: 'أجاثا كريستي', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', rating: 4, categoryLabel: 'روايات' },
+            { id: 6, title: 'دليل التصميم', author: 'مصمم جرافيك', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 3, categoryLabel: 'تعليمية' },
+            { id: 7, title: 'كتاب الفلسفة', author: 'فيلسوف معاصر', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', rating: 5, categoryLabel: 'دينية' }
+        ];
+
+        function displayBooks(booksToShow) {
+            booksGrid.innerHTML = '';
+            booksToShow.forEach(book => {
+                // توليد نجوم التقييم التفاعلية
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= book.rating) {
+                        starsHtml += `<i class="fas fa-star" style="cursor:pointer; color:#ffcc00;" onclick="rateBook(${book.id}, ${i})"></i>`;
+                    } else {
+                        starsHtml += `<i class="far fa-star" style="cursor:pointer; color:#ccc;" onclick="rateBook(${book.id}, ${i})"></i>`;
+                    }
+                }
+
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                <div class="card-image">
+                    <img src="${book.image}" alt="${book.title}">
+                    <div class="card-rating">
+                        ${starsHtml}
+                    </div>
+                </div>
+                <div class="card-content">
+                    <span class="card-cat">${book.categoryLabel}</span>
+                    <h2 class="card-title">${book.title}</h2>
+                    <p class="card-author">${book.author}</p>
+                    <div class="card-actions">
+                        <button class="action-btn btn-pdf lightning-btn" onclick="addToCart(this, '${book.title}', 1, '${book.image}', 'pdf')">
+                            <span class="price-tag">1$</span>
+                            <span>نسخة PDF <i class="fas fa-file-pdf"></i></span>
+                        </button>
+                        <button class="action-btn btn-paper lightning-btn" onclick="addToCart(this, '${book.title}', 18, '${book.image}', 'paper')">
+                            <span class="price-tag">18$</span>
+                            <span>نسخة ورقية <i class="fas fa-book"></i></span>
+                        </button>
+                    </div>
+                </div>
+            `;
+                booksGrid.appendChild(bookCard);
+            });
+        }
+
+        // دالة تحديث التقييم عند النقر
+        function rateBook(id, newRating) {
+            const book = books.find(b => b.id === id);
+            if (book) {
+                book.rating = newRating;
+                // إعادة عرض الكتب لتحديث النجوم (مع الحفاظ على الفلتر الحالي)
+                const activeBtn = document.querySelector('.filter-btn.active');
+                const category = activeBtn ? activeBtn.getAttribute('data-category') : 'all';
+                displayBooks(category === 'all' ? books : books.filter(b => b.category === category));
+            }
+        }
+
+        // --- 6. الفلاتر والبحث ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const cat = btn.getAttribute('data-category');
+                displayBooks(cat === 'all' ? books : books.filter(b => b.category === cat));
+            });
+        });
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            displayBooks(books.filter(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query)));
+        });
+
+        // --- 7. التشغيل الابتدائي والمزامنة ---
+        displayBooks(books);
+        updateCart();
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'fashon_cart') updateCart();
+        });
+
+        // --- 6. وظيفة تأكيد الطلب النهائية (الإصلاح الجذري) ---
+        function confirmFinalOrder() {
+            const nameInput = document.getElementById('cust-name');
+            const ageInput = document.getElementById('cust-age');
+            const addressInput = document.getElementById('cust-address');
+            const phoneInput = document.getElementById('cust-phone');
+            const notesInput = document.getElementById('cust-notes');
+            const paymentInput = document.getElementById('payment-method');
+
+            let hasError = false;
+
+            // دالة لإظهار الخطأ داخل الحقل
+            function showError(input, msg) {
+                input.value = ''; 
+                const originalPlaceholder = input.getAttribute('placeholder');
+                input.setAttribute('data-original-ph', originalPlaceholder); // حفظ النص الأصلي
+                input.setAttribute('placeholder', msg);
+                input.classList.add('input-error');
+                
+                input.onfocus = function() {
+                    this.classList.remove('input-error');
+                    this.setAttribute('placeholder', this.getAttribute('data-original-ph'));
+                };
+                hasError = true;
+            }
+
+            if (nameInput.value.trim().split(' ').length < 3) {
+                showError(nameInput, 'الاسم ثلاثي مطلوب ❌');
+            }
+            if (!ageInput.value || ageInput.value < 5 || ageInput.value > 90) {
+                showError(ageInput, 'العمر غير صحيح ❌');
+            }
+            if (addressInput.value.trim().length < 10) {
+                showError(addressInput, 'العنوان بالتفصيل مطلوب ❌');
+            }
+            if (!/^01[0125][0-9]{8}$/.test(phoneInput.value.trim())) {
+                showError(phoneInput, 'رقم الهاتف غير صحيح ❌');
+            }
+            if (!paymentInput.value) {
+                paymentInput.style.borderColor = '#ff4e31';
+                paymentInput.classList.add('input-error');
+                paymentInput.onchange = function() {
+                    this.style.borderColor = '#333';
+                    this.classList.remove('input-error');
+                };
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const name = nameInput.value.trim();
+            const age = ageInput.value.trim();
+            const address = addressInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const notes = notesInput.value.trim();
+            const paymentMethod = paymentInput.value;
+
+            // رسالة النجاح والتوجه للواتساب
+            Swal.fire({
+                title: 'جاري توجيهك للواتساب...',
+                text: 'سيتم فتح المحادثة الآن لإتمام طلبك ✨',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 2000,
+                willClose: () => {
+                    // تأثير القصاصات الملونة
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
+                    // بناء رسالة الواتساب
+                    let msg = `🚀 *طلب جديد من متجر كتب الفشن*\n\n`;
+                    msg += `👤 *الاسم:* ${name}\n`;
+                    msg += `🎂 *العمر:* ${age} سنة\n`;
+                    msg += `📍 *العنوان:* ${address}\n`;
+                    msg += `📞 *الهاتف:* ${phone}\n`;
+                    if(notes) msg += `📝 *ملاحظات:* ${notes}\n`;
+                    msg += `💳 *طريقة الدفع:* ${paymentMethod}\n\n`;
+                    msg += `📦 *الكتب المطلوبة:*\n`;
+
+                    let total = 0;
+                    cart.forEach((item, i) => {
+                        const q = item.quantity || 1;
+                        msg += `${i + 1}. ${item.title} (${item.type === 'paper' ? 'ورقي' : 'PDF'}) - ${item.price}$ x ${q}\n`;
+                        total += item.price * q;
+                    });
+
+                    msg += `\n💰 *الإجمالي النهائي: ${total}$*`;
+
+                    // فتح الرابط
+                    window.open(`https://wa.me/201158606601?text=${encodeURIComponent(msg)}`, '_blank');
+
+                    // تفريغ السلة وإغلاق النافذة
+                    cart = [];
+                    saveCartToStorage();
+                    updateCart();
+                    closeCheckout();
+                }
+            });
+        }
+
+        // --- 7. عرض الكتب الأولي ---
+        // تأكد أن مصفوفة books موجودة فوق هذا السطر في كودك الأصلي
+        displayBooks(books);
+        updateCart();
+
+        // --- إدارة الإعدادات (الثيم والخطوط) ---
+        function setTheme(mode) {
+            if (mode === 'light' || mode === 'old') {
+                document.body.classList.add('light-mode');
+                document.getElementById('btn-old').classList.add('active');
+                document.getElementById('btn-dark').classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('btn-dark').classList.add('active');
+                document.getElementById('btn-old').classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function setFontSize(size) {
+            document.body.style.fontSize = size + 'px';
+            localStorage.setItem('fontSize', size);
+        }
+
+        function setFontFamily(font) {
+            document.body.style.fontFamily = font;
+            localStorage.setItem('fontFamily', font);
+        }
+
+        // تحميل الإعدادات
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+        const savedSize = localStorage.getItem('fontSize');
+        if(savedSize) { document.body.style.fontSize = savedSize + 'px'; document.getElementById('font-size-slider').value = savedSize; }
+        const savedFont = localStorage.getItem('fontFamily');
+        if(savedFont) { document.body.style.fontFamily = savedFont; document.getElementById('font-family-select').value = savedFont; }
+
+        // --- إخفاء شاشة التحميل ---
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
+
+    <div id="checkout-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
+        <div
+            style="background:#1a1a1a; padding:30px; border-radius:20px; border:1px solid #333; width:90%; max-width:400px; position:relative;">
+            <i class="fas fa-times" onclick="closeCheckout()"
+                style="position:absolute; top:20px; left:20px; cursor:pointer; color:#666;"></i>
+            <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;">بيانات الاستلام 🚚</h2>
+
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <input type="text" id="cust-name" placeholder="الاسم الثلاثي"
+                    style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none;">
+                <input type="number" id="cust-age" placeholder="العمر"
+                    style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none;">
+                <input type="text" id="cust-address" placeholder="العنوان بالتفصيل"
+                    style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none;">
+                <input type="tel" id="cust-phone" placeholder="رقم الواتساب (11 رقم)"
+                    style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none;">
+                <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)" rows="3"
+                    style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none; resize: none;"></textarea>
+                <select id="payment-method" style="padding:12px; border-radius:10px; border:1px solid #333; background:#000; color:white; outline:none; cursor:pointer;">
+                    <option value="" disabled selected>اختر طريقة الدفع</option>
+                    <option value="كاش عند الاستلام">💵 كاش عند الاستلام</option>
+                    <option value="فودافون كاش">📱 فودافون كاش</option>
+                </select>
+
+                <button onclick="confirmFinalOrder()" class="btn" style="width:100%; margin:0; padding:15px;">إرسال
+                    الطلب عبر واتساب</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كتب الفشن</title>
+    <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/book-236-444346.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        #cart-btn::after {
+            /* هذا هو السطر الأهم، يقوم بسحب الرقم من الجافا سكريبت */
+            content: var(--cart-count, "0");
+
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5e3a;
+            /* لون أحمر/برتقالي للتنبيه */
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid var(--header-bg);
+        }
+
+        :root {
+            --primary: #ff5e3a;
+            --grad: linear-gradient(90deg, #ff4e31, #ff8c31);
+            --bg: #0a0a0a;
+            
+            /* --- متغيرات الألوان --- */
+            --text-main: #ffffff;
+            --text-sec: #cccccc;
+            --header-bg: rgba(10, 10, 10, 0.95);
+            --sidebar-bg: #111;
+            --border-color: #333;
+            --input-bg: #111;
+            --card-bg: #1a1a1a;
+        }
+
+        body.light-mode {
+            --bg: #f4ecd8;
+            --text-main: #2c2520;
+            --text-sec: #5d534a;
+            --header-bg: rgba(244, 236, 216, 0.95);
+            --sidebar-bg: #f4ecd8;
+            --border-color: #8c7b6c;
+            --input-bg: rgba(232, 224, 197, 0.6);
+            --card-bg: rgba(255, 253, 240, 0.9);
+        }
+
+        /* --- تأثير ملمس الورق في الوضع النهاري --- */
+        body.light-mode .bg-grid::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+            opacity: 0.5;
+            mix-blend-mode: multiply;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- نضافة الخلفية --- */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--input-bg) 0%, var(--bg) 100%);
+            perspective: 1000px;
+        }
+
+        .grid-layer {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image:
+                linear-gradient(to right, rgba(128, 128, 128, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(50deg) rotateZ(-5deg);
+            mask-image: radial-gradient(circle, black, transparent 85%);
+        }
+
+        /* --- الهيدر --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo-txt {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .logo-box {
+            background: var(--grad);
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search {
+            position: relative;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-main);
+            text-align: right;
+            outline: none;
+        }
+
+        .search i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- السلة والعداد --- */
+        .cart-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        /* تعديل العداد ليظهر برمجياً */
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Neon Green Accents for Dark Mode */
+        body.dark-mode .cart-count {
+            background: #39ff14;
+            color: black;
+        }
+
+        /* --- زر تبديل الثيم --- */
+        .theme-toggle {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-sec);
+            border: 1px solid var(--border-color);
+        }
+        .theme-toggle:hover { color: var(--primary); border-color: var(--primary); transform: rotate(15deg); }
+
+        /* --- قائمة الموبايل --- */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-sec);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 5px);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -5px);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 20px;
+            }
+
+            .logo-txt {
+                font-size: 22px;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--header-bg);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                transition: 0.3s;
+                gap: 30px;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links a {
+                font-size: 24px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 10px;
+            }
+        }
+
+        /* --- السلة (Sidebar) --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
+            z-index: 200;
+            transition: 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 40px;
+            height: 60px;
+            object-fit: cover;
+        }
+
+        .remove-item {
+            color: #ff4e31;
+            cursor: pointer;
+            margin-right: auto;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .btn {
+            background: var(--grad);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 10px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-sec);
+            color: var(--text-main);
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .grad-txt {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Animations (تأثيرات الحركة) --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { animation: fadeInDown 0.8s ease-out; }
+        .hero-inner { animation: fadeInUp 1s ease-out; }
+        .hero-inner h1 { animation: fadeInUp 1s ease-out 0.2s both; }
+        .hero-inner p { animation: fadeInUp 1s ease-out 0.4s both; }
+        .hero-inner .btn { animation: fadeInUp 1s ease-out 0.6s both; }
+
+        /* --- Preloader --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 999999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255, 94, 58, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body.loaded #preloader { opacity: 0; visibility: hidden; }
+
+        /* --- Modal Styles --- */
+        #checkout-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 9999;
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--card-bg); padding: 30px; border-radius: 20px;
+            border: 1px solid var(--border-color); width: 90%; max-width: 400px; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 20px; left: 20px; cursor: pointer;
+            color: var(--text-sec); transition: 0.3s;
+        }
+        .modal-close:hover { color: var(--primary); }
+        .modal-input {
+            width: 100%; padding: 12px; border-radius: 10px;
+            border: 1px solid var(--border-color); background: var(--input-bg);
+            color: var(--text-main); outline: none; transition: 0.3s;
+        }
+        .modal-input:focus { border-color: var(--primary); }
+        .modal-body {
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        
+        select option {
+            background-color: #1a1a1a;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- شاشة التحميل -->
+    <div id="preloader"><div class="loader"></div></div>
+
+    <div class="bg-grid">
+        <div class="grid-layer"></div>
+    </div>
+
+    <header class="header">
+        <a href="index.html" class="logo">
+            <span class="logo-txt">كتب الفشن</span>
+            <div class="logo-box"><i class="fas fa-book-open"></i></div>
+        </a>
+
+        <div class="nav-center">
+            <div class="search">
+                <input type="text" placeholder="ابحث عن كتابك...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <nav class="nav-links" id="nav-menu">
+                <a href="index.html">الرئيسية</a>
+                <a href="index22.html">المتجر</a>
+                <a href="contact.html">تواصل معنا</a>
+            </nav>
+
+            <div class="theme-toggle" id="theme-toggle"><i class="fas fa-sun"></i></div>
+            <div class="cart-btn" id="cart-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cart-counter">0</span>
+            </div>
+
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary);">السلة</h2>
+            <i class="fas fa-times" id="close-cart" style="cursor: pointer;"></i>
+        </div>
+        <div id="cart-items">
+            <p style="text-align: center; color: var(--text-sec);">السلة فارغة</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+        <div id="cart-total" style="font-weight: bold; margin-bottom: 20px;">المجموع: 0$</div>
+        <button class="btn" style="width: 100%; margin: 0;">إتمام الدفع</button>
+    </div>
+
+    <main class="hero">
+        <div class="hero-inner">
+            <div
+                style="background: rgba(255,87,34,0.1); color: #ff8c31; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 20px;">
+                🔥 عروض حصرية: أي كتاب PDF بـ 1$ فقط!
+            </div>
+            <h1 style="font-size: 3rem; margin-bottom: 20px;">أشعل شغفك <span class="grad-txt">بالقراءة</span></h1>
+            <p style="color: var(--text-sec); margin-bottom: 30px;">اكتشف عالم الكتب الرقمية بأسعار مذهلة.</p>
+            <button class="btn" onclick="window.location.href='index22.html'">استعرض المتجر</button>
+            <button class="btn btn-outline" onclick="window.location.href='contact.html'">تواصل معنا</button>
+        </div>
+    </main>
+    <script>
+        // 1. تعريف العناصر
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const closeCart = document.getElementById('close-cart');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalDisplay = document.getElementById('cart-total');
+
+        // 2. جلب البيانات من الذاكرة المحلية
+        let cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+
+        // 3. دالة تحديث واجهة السلة (تم تعديل استدعاء الحذف هنا)
+        function updateCartUI() {
+            // نحدث المصفوفة من الذاكرة لضمان المزامنة
+            cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart"> (❁´◡`❁) السلة فارغة </p>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    cartItemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.title}">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-type">${item.type === 'paper' ? 'ورقي' : 'PDF'}</div>
+                            <div class="cart-item-price">${item.price}$</div>
+                        </div>
+                        <i class="fas fa-trash remove-item" onclick="handleRemove(event, ${index})"></i>
+                    </div>
+                `;
+                });
+            }
+
+            cartTotalDisplay.textContent = `المجموع: ${total}$`;
+            document.documentElement.style.setProperty('--cart-count', `"${cart.length}"`);
+            localStorage.setItem('fashon_cart', JSON.stringify(cart));
+        }
+
+        // 4. دالة الحذف الذكية (تمنع إغلاق السلة نهائياً)
+        window.handleRemove = function (event, index) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation(); // هذا السطر يمنع إغلاق السلة عند الحذف
+            }
+
+            cart.splice(index, 1);
+            localStorage.setItem('fashon_cart', JSON.stringify(cart));
+
+            // تحديث الواجهة فوراً
+            updateCartUI();
+        };
+
+        // 5. التحكم في القوائم (محدث ليعمل الموبايل والحذف)
+        hamburger.onclick = (e) => {
+            e.stopPropagation();
+            hamburger.classList.toggle('open');
+            document.getElementById('nav-menu').classList.toggle('active');
+        };
+
+        cartBtn.onclick = () => cartSidebar.classList.add('open');
+        closeCart.onclick = () => cartSidebar.classList.remove('open');
+
+        // إغلاق عند النقر في الخارج مع استثناء عناصر السلة والقائمة
+        document.onclick = (e) => {
+            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target)) {
+                cartSidebar.classList.remove('open');
+                document.getElementById('nav-menu').classList.remove('active');
+                hamburger.classList.remove('open');
+            }
+        };
+
+        updateCartUI();
+
+        // 7. مزامنة التبويبات (المتجر مع الرئيسية)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'fashon_cart') {
+                updateCartUI();
+            }
+        });
+
+        // --- الوضع النهاري (Light Mode) ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        // تحميل الثيم المحفوظ
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        // --- إخفاء شاشة التحميل ---
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+// فتح نافذة البيانات عند الضغط على إتمام الدفع في السلة
+const checkoutBtn = document.querySelector('.cart-sidebar .btn');
+if(checkoutBtn) {
+    checkoutBtn.onclick = () => {
+        if (cart.length === 0) return alert("السلة فارغة!");
+        document.getElementById('checkout-modal').style.display = 'flex';
+    }
+}
+
+function closeCheckout() {
+    document.getElementById('checkout-modal').style.display = 'none';
+}
+
+function confirmOrder() {
+    const name = document.getElementById('cust-name').value.trim();
+    const age = document.getElementById('cust-age').value.trim();
+    const address = document.getElementById('cust-address').value.trim();
+    const phoneInput = document.getElementById('cust-phone').value.trim();
+    const notes = document.getElementById('cust-notes').value.trim();
+    const paymentMethod = document.getElementById('payment-method').value;
+
+    // 1. التحقق من البيانات
+    if (name.split(' ').length < 3) return alert("يرجى كتابة الاسم ثلاثياً");
+    if (!age || age < 5 || age > 90) return alert("يرجى إدخال عمر صحيح");
+    if (address.length < 10) return alert("يرجى كتابة العنوان بالتفصيل");
+    
+    // التحقق من رقم الهاتف المصري (يبدأ بـ 01 ومكون من 11 رقم)
+    const phoneRegex = /^01[0125][0-9]{8}$/;
+    if (!phoneRegex.test(phoneInput)) return alert("يرجى إدخال رقم هاتف مصري صحيح (11 رقم)");
+    if (!paymentMethod) return alert("يرجى اختيار طريقة الدفع");
+
+    // 2. التفاعل المفرح
+    confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 }
+    });
+
+    // 3. تجهيز الرسالة لواتساب الخاص بك
+    const myNumber = "201158606601"; 
+    let message = `🚀 *طلب جديد من متجر الفشن*\n\n`;
+    message += `👤 *الاسم:* ${name}\n`;
+    message += `🎂 *العمر:* ${age} سنة\n`;
+    message += `📍 *العنوان:* ${address}\n`;
+    message += `📞 *هاتف العميل:* ${phoneInput}\n\n`;
+    if(notes) message += `📝 *ملاحظات:* ${notes}\n`;
+    message += `💳 *طريقة الدفع:* ${paymentMethod}\n\n`;
+    message += `� *الكتب المطلوبة:*\n`;
+
+    let total = 0;
+    cart.forEach((item, index) => {
+        message += `${index + 1}. ${item.title} (${item.type === 'paper' ? 'ورقي' : 'PDF'}) - ${item.price}$\n`;
+        total += item.price;
+    });
+
+    message += `\n💰 *الإجمالي النهائي: ${total}$*`;
+
+    // 4. الإرسال
+    setTimeout(() => {
+        window.open(`https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        closeCheckout();
+    }, 1000);
+}
+    </script>
+    <div id="checkout-modal">
+    <div class="modal-content">
+        <i class="fas fa-times modal-close" onclick="closeCheckout()"></i>
+        <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;">بيانات الاستلام 🚚</h2>
+        
+        <div class="modal-body">
+            <input type="text" id="cust-name" placeholder="الاسم الثلاثي" class="modal-input">
+            <input type="number" id="cust-age" placeholder="العمر" class="modal-input">
+            <input type="text" id="cust-address" placeholder="العنوان بالتفصيل" class="modal-input">
+            <input type="tel" id="cust-phone" placeholder="رقم الواتساب (11 رقم)" class="modal-input">
+            <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)" rows="3" class="modal-input" style="resize: none;"></textarea>
+            <select id="payment-method" class="modal-input" style="cursor:pointer;">
+                <option value="" disabled selected>اختر طريقة الدفع</option>
+                <option value="كاش عند الاستلام">💵 كاش عند الاستلام</option>
+                <option value="فودافون كاش">📱 فودافون كاش</option>
+            </select>
+            
+            <button onclick="confirmOrder()" class="btn" style="width:100%; margin:0; padding:15px;">تأكيد وطلب عبر واتساب</button>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
