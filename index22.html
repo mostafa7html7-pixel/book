@@ -163,7 +163,7 @@
             border: 1px solid var(--border-color);
             border-radius: 25px;
             color: var(--text-main);
-            text-align: right;
+            text-align: inherit;
             outline: none;
             transition: 0.3s;
         }
@@ -296,6 +296,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            overflow-y: auto;
         }
 
         .mobile-menu.open {
@@ -339,6 +340,19 @@
             color: var(--text-main);
             outline: none;
         }
+        
+        .color-options { display: flex; gap: 10px; justify-content: space-between; margin-top: 10px; }
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid var(--border-color); transition: 0.3s; }
+        .color-btn:hover { transform: scale(1.2); border-color: var(--text-main); }
+
+        .pattern-options { display: flex; gap: 5px; margin-top: 10px; }
+        .pattern-btn { flex: 1; padding: 8px; font-size: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .pattern-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .language-options { display: flex; gap: 10px; margin-top: 10px; }
+        .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
 
         /* --- السلة (Cart Sidebar) --- */
         .cart-sidebar {
@@ -661,21 +675,19 @@
             transform: scale(1.05);
         }
 
-        .card-rating {
+        .card-badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            color: #ffcc00;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 94, 58, 0.9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
         }
 
         .card-content {
@@ -985,6 +997,14 @@
             transition: 0.3s;
         }
         .clear-cart-btn:hover { background: #ff4444; color: white; }
+        
+        /* --- تحسين السلة للموبايل --- */
+        @media (max-width: 768px) {
+            .cart-sidebar { width: 85%; right: -85%; border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.8); }
+            .cart-sidebar.open { right: 0; }
+            .cart-item { padding: 15px; margin-bottom: 10px; }
+            .qty-btn { width: 28px; height: 28px; font-size: 16px; }
+        }
 
         /* --- ضبط الموبايل (Responsive Fix) --- */
         @media (max-width: 768px) {
@@ -1006,16 +1026,13 @@
 
             /* إخفاء البحث في الموبايل للبساطة، أو يمكن إضافته لاحقًا */
             .header {
-                padding: 10px 20px;
+                padding: 10px 15px;
             }
+            .nav-right { gap: 8px; }
+            .theme-toggle, .cart-btn { width: 38px; height: 38px; }
 
             .hero {
                 margin-top: 70px;
-            }
-
-            .cart-sidebar {
-                width: 100%;
-                right: -100%;
             }
 
             .books-grid {
@@ -1031,6 +1048,41 @@
                 min-height: auto;
             }
         }
+
+        /* --- زر الإعدادات العائم (Desktop) --- */
+        .settings-btn-floating {
+            position: fixed; top: 50%; left: 0; transform: translateY(-50%);
+            background: var(--card-bg); border: 1px solid var(--border-color); border-left: none;
+            padding: 10px; border-radius: 0 10px 10px 0; cursor: pointer; z-index: 999;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: 0.3s; color: var(--primary); font-size: 18px;
+        }
+        .settings-btn-floating:hover { background: var(--primary); color: white; padding-left: 15px; }
+
+        /* --- قائمة الإعدادات الجانبية (Desktop) --- */
+        .settings-sidebar {
+            position: fixed; top: 0; left: -350px; width: 300px; height: 100vh;
+            background: var(--card-bg); border-right: 1px solid var(--border-color); z-index: 1000;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); padding: 25px; overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
+        }
+        .settings-sidebar.open { left: 0; }
+        
+        .settings-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+        }
+        .settings-header h3 { margin: 0; font-size: 18px; color: var(--primary); }
+        .close-settings { cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .close-settings:hover { color: var(--primary); transform: rotate(90deg); }
+
+        /* إخفاء الزر والقائمة في الموبايل */
+        @media (max-width: 768px) {
+            .settings-btn-floating, .settings-sidebar { display: none; }
+        }
+        
+        /* تعديل بسيط لضمان ظهور المحتوى */
+        .settings-content .setting-item { margin-bottom: 20px; }
+        .settings-content label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 
@@ -1049,21 +1101,21 @@
 
     <header class="header">
         <div class="logo">
-            <span class="logo-txt">كتب الفشن</span>
+            <span class="logo-txt" data-i18n="logo">كتب الفشن</span>
             <div class="logo-box"><i class="fas fa-book-open"></i></div>
         </div>
         <div class="nav-center">
             <div class="search">
-                <input type="text" id="search-input" placeholder="ابحث عن كتابك...">
+                <input type="text" id="search-input" placeholder="ابحث عن كتابك..." data-i18n-ph="search_placeholder">
                 <i class="fas fa-search"></i>
             </div>
         </div>
         <div class="nav-right">
             <nav class="nav-links">
-                <a href="index.html">الرئيسية</a>
-                <a href="index22.html">المتجر</a>
-                <a href="about.html">من نحن</a>
-                <a href="contact.html">تواصل معنا</a>
+                <a href="index.html" data-i18n="home">الرئيسية</a>
+                <a href="index22.html" data-i18n="store">المتجر</a>
+                <a href="about.html" data-i18n="about">من نحن</a>
+                <a href="contact.html" data-i18n="contact">تواصل معنا</a>
             </nav>
             <!-- زر الصعود للأعلى -->
             <div class="scroll-top-btn" id="scrollTopBtn">
@@ -1086,29 +1138,114 @@
         <a href="contact.html">تواصل معنا</a>
         
         <div class="menu-settings">
-            <h3>⚙️ إعدادات العرض</h3>
+            <button id="settings-toggle" style="width:100%; background:none; border:none; color:var(--primary); font-size:18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:10px 0; border-bottom: 1px solid var(--border-color);">
+                ⚙️ إعدادات العرض <i class="fas fa-chevron-down" style="transition:0.3s"></i>
+            </button>
             
+            <div id="settings-content" style="display:none; padding-top:15px;">
+                <div class="setting-item">
+                    <label>الإضاءة</label>
+                    <div class="theme-options">
+                        <button class="theme-btn" id="btn-old" onclick="setTheme('light')">📜 عتيق</button>
+                        <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نوع الخط</label>
+                    <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                        <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
+                        <option value="'Amiri', serif">أميري (نسخ)</option>
+                        <option value="'Cairo', sans-serif">كايرو (حديث)</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>لون التمييز</label>
+                    <div class="color-options">
+                        <div class="color-btn" style="background: #ff5e3a;" onclick="setPrimaryColor('#ff5e3a')"></div>
+                        <div class="color-btn" style="background: #00c851;" onclick="setPrimaryColor('#00c851')"></div>
+                        <div class="color-btn" style="background: #33b5e5;" onclick="setPrimaryColor('#33b5e5')"></div>
+                        <div class="color-btn" style="background: #aa66cc;" onclick="setPrimaryColor('#aa66cc')"></div>
+                        <div class="color-btn" style="background: #ffbb33;" onclick="setPrimaryColor('#ffbb33')"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نمط الخلفية</label>
+                    <div class="pattern-options">
+                        <button class="pattern-btn" onclick="setPattern('grid')">شبكة</button>
+                        <button class="pattern-btn" onclick="setPattern('dots')">نقط</button>
+                        <button class="pattern-btn" onclick="setPattern('lines')">خطوط</button>
+                        <button class="pattern-btn" onclick="setPattern('none')">بدون</button>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="resetSettings()" style="width:100%; margin-top:10px; background:var(--card-bg); border:1px solid var(--border-color);">
+                    إعادة ضبط الإعدادات ↺
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر الإعدادات العائم (للشاشات الكبيرة) -->
+    <div class="settings-btn-floating" id="settings-btn-floating">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <!-- قائمة الإعدادات الجانبية (للشاشات الكبيرة) -->
+    <div class="settings-sidebar" id="settings-sidebar">
+        <div class="settings-header">
+            <h3>إعدادات العرض</h3>
+            <i class="fas fa-times close-settings" id="close-settings"></i>
+        </div>
+        <div class="settings-content">
             <div class="setting-item">
                 <label>الإضاءة</label>
                 <div class="theme-options">
-                    <button class="theme-btn" id="btn-old" onclick="setTheme('light')">📜 عتيق</button>
-                    <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                    <button class="theme-btn" onclick="setTheme('old')">📜 عتيق</button>
+                    <button class="theme-btn" onclick="setTheme('dark')">🌑 ليلي</button>
                 </div>
             </div>
 
             <div class="setting-item">
-                <label>حجم الخط</label>
-                <input type="range" min="14" max="22" value="16" id="font-size-slider" oninput="setFontSize(this.value)">
-            </div>
-
-            <div class="setting-item">
                 <label>نوع الخط</label>
-                <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                <select class="font-select" onchange="setFontFamily(this.value)">
                     <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
                     <option value="'Amiri', serif">أميري (نسخ)</option>
                     <option value="'Cairo', sans-serif">كايرو (حديث)</option>
                 </select>
             </div>
+
+            <div class="setting-item">
+                <label>تباعد الأسطر</label>
+                <input type="range" min="1.2" max="2.2" step="0.1" value="1.6" id="line-height-slider" oninput="setLineHeight(this.value)">
+            </div>
+
+            <div class="setting-item">
+                <label>لون التمييز</label>
+                <div class="color-options">
+                    <div class="color-btn" style="background: #ff5e3a;" onclick="setPrimaryColor('#ff5e3a')"></div>
+                    <div class="color-btn" style="background: #00c851;" onclick="setPrimaryColor('#00c851')"></div>
+                    <div class="color-btn" style="background: #33b5e5;" onclick="setPrimaryColor('#33b5e5')"></div>
+                    <div class="color-btn" style="background: #aa66cc;" onclick="setPrimaryColor('#aa66cc')"></div>
+                    <div class="color-btn" style="background: #ffbb33;" onclick="setPrimaryColor('#ffbb33')"></div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label>نمط الخلفية</label>
+                <div class="pattern-options">
+                    <button class="pattern-btn" onclick="setPattern('grid')">شبكة</button>
+                    <button class="pattern-btn" onclick="setPattern('dots')">نقط</button>
+                    <button class="pattern-btn" onclick="setPattern('lines')">خطوط</button>
+                    <button class="pattern-btn" onclick="setPattern('none')">بدون</button>
+                </div>
+            </div>
+
+            <button class="btn" onclick="resetSettings()" style="width:100%; margin-top:10px; background:var(--card-bg); border:1px solid var(--border-color);">
+                إعادة ضبط ↺
+            </button>
         </div>
     </div>
 
@@ -1326,7 +1463,7 @@
             let total = 0;
 
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="empty-cart">  السلة فارغة </p>';
+                cartItems.innerHTML = '<p class="empty-cart">السلة فارغة</p>';
             } else {
                 cart.forEach((item, index) => {
                     item.quantity = item.quantity || 1;
@@ -1364,35 +1501,26 @@
 
         // --- 5. بيانات الكتب وعرضها ---
         const books = [
-            { id: 1, title: 'الكتاب مقابل السجائر', author: 'جورج أورويل', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', rating: 4, categoryLabel: 'روايات' },
-            { id: 2, title: 'سبل تعزيز مبيعات الكتب', author: 'خبير مبيعات', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 3, categoryLabel: 'تعليمية' },
-            { id: 3, title: 'كنز الطالب', author: 'مؤلف ديني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', rating: 5, categoryLabel: 'دينية' },
-            { id: 4, title: 'البرمجة الأساسية', author: 'مؤلف تقني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 4, categoryLabel: 'تعليمية' },
-            { id: 5, title: 'رواية الغموض', author: 'أجاثا كريستي', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', rating: 4, categoryLabel: 'روايات' },
-            { id: 6, title: 'دليل التصميم', author: 'مصمم جرافيك', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', rating: 3, categoryLabel: 'تعليمية' },
-            { id: 7, title: 'كتاب الفلسفة', author: 'فيلسوف معاصر', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', rating: 5, categoryLabel: 'دينية' }
+            { id: 1, title: 'الكتاب مقابل السجائر', author: 'جورج أورويل', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'ناري 🔥' },
+            { id: 2, title: 'سبل تعزيز مبيعات الكتب', author: 'خبير مبيعات', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'جديد 🆕' },
+            { id: 3, title: 'كنز الطالب', author: 'مؤلف ديني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر طلباً 🚀' },
+            { id: 4, title: 'البرمجة الأساسية', author: 'مؤلف تقني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'مميز ✨' },
+            { id: 5, title: 'رواية الغموض', author: 'أجاثا كريستي', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'تريند 📈' },
+            { id: 6, title: 'دليل التصميم', author: 'مصمم جرافيك', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'حصري 💎' },
+            { id: 7, title: 'كتاب الفلسفة', author: 'فيلسوف معاصر', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر مبيعاً 📦' }
         ];
 
         function displayBooks(booksToShow) {
             booksGrid.innerHTML = '';
             booksToShow.forEach(book => {
-                // توليد نجوم التقييم التفاعلية
-                let starsHtml = '';
-                for (let i = 1; i <= 5; i++) {
-                    if (i <= book.rating) {
-                        starsHtml += `<i class="fas fa-star" style="cursor:pointer; color:#ffcc00;" onclick="rateBook(${book.id}, ${i})"></i>`;
-                    } else {
-                        starsHtml += `<i class="far fa-star" style="cursor:pointer; color:#ccc;" onclick="rateBook(${book.id}, ${i})"></i>`;
-                    }
-                }
-
                 const bookCard = document.createElement('div');
                 bookCard.className = 'book-card';
+                bookCard.setAttribute('data-id', book.id);
                 bookCard.innerHTML = `
                 <div class="card-image">
                     <img src="${book.image}" alt="${book.title}">
-                    <div class="card-rating">
-                        ${starsHtml}
+                    <div class="card-badge">
+                        ${book.badge}
                     </div>
                 </div>
                 <div class="card-content">
@@ -1400,9 +1528,9 @@
                     <h2 class="card-title">${book.title}</h2>
                     <p class="card-author">${book.author}</p>
                     <div class="card-actions">
-                        <button class="action-btn btn-pdf lightning-btn" onclick="addToCart(this, '${book.title}', 1, '${book.image}', 'pdf')">
-                            <span class="price-tag">1$</span>
-                            <span>نسخة PDF <i class="fas fa-file-pdf"></i></span>
+                        <button class="action-btn btn-pdf lightning-btn" onclick="downloadPdf('${book.title}')">
+                            <span class="price-tag">مجانا</span>
+                            <span>تحميل PDF <i class="fas fa-file-pdf"></i></span>
                         </button>
                         <button class="action-btn btn-paper lightning-btn" onclick="addToCart(this, '${book.title}', 18, '${book.image}', 'paper')">
                             <span class="price-tag">18$</span>
@@ -1413,18 +1541,6 @@
             `;
                 booksGrid.appendChild(bookCard);
             });
-        }
-
-        // دالة تحديث التقييم عند النقر
-        function rateBook(id, newRating) {
-            const book = books.find(b => b.id === id);
-            if (book) {
-                book.rating = newRating;
-                // إعادة عرض الكتب لتحديث النجوم (مع الحفاظ على الفلتر الحالي)
-                const activeBtn = document.querySelector('.filter-btn.active');
-                const category = activeBtn ? activeBtn.getAttribute('data-category') : 'all';
-                displayBooks(category === 'all' ? books : books.filter(b => b.category === category));
-            }
         }
 
         // --- 6. الفلاتر والبحث ---
@@ -1449,6 +1565,17 @@
         window.addEventListener('storage', (e) => {
             if (e.key === 'fashon_cart') updateCart();
         });
+
+        // --- دالة تحميل PDF (مباشر) ---
+        function downloadPdf(title) {
+            Swal.fire({
+                icon: 'success',
+                title: 'جاري التحميل...',
+                text: `بدأ تحميل كتاب: ${title}`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
 
         // --- 6. وظيفة تأكيد الطلب النهائية (الإصلاح الجذري) ---
         function confirmFinalOrder() {
@@ -1569,23 +1696,96 @@
             }
         }
 
-        function setFontSize(size) {
-            document.body.style.fontSize = size + 'px';
-            localStorage.setItem('fontSize', size);
-        }
-
         function setFontFamily(font) {
             document.body.style.fontFamily = font;
             localStorage.setItem('fontFamily', font);
+        }
+        
+        function setPrimaryColor(color) {
+            document.documentElement.style.setProperty('--primary', color);
+            localStorage.setItem('primaryColor', color);
+            
+            const gradients = {
+                '#ff5e3a': 'linear-gradient(90deg, #ff4e31, #ff8c31)',
+                '#00c851': 'linear-gradient(90deg, #007e33, #00c851)',
+                '#33b5e5': 'linear-gradient(90deg, #0099cc, #33b5e5)',
+                '#aa66cc': 'linear-gradient(90deg, #9933cc, #aa66cc)',
+                '#ffbb33': 'linear-gradient(90deg, #ff8800, #ffbb33)'
+            };
+            if(gradients[color]) {
+                document.documentElement.style.setProperty('--grad', gradients[color]);
+                localStorage.setItem('primaryGrad', gradients[color]);
+            }
+        }
+        
+        function setPattern(pattern) {
+            const gridLayer = document.querySelector('.grid-layer');
+            if(!gridLayer) return;
+            localStorage.setItem('bgPattern', pattern);
+            gridLayer.style.backgroundImage = ''; gridLayer.style.backgroundSize = '';
+            const color = 'var(--border-color)'; 
+            if(pattern === 'grid') {
+                gridLayer.style.backgroundImage = `linear-gradient(to right, ${color} 1px, transparent 1px), linear-gradient(to bottom, ${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '60px 60px';
+            } else if(pattern === 'dots') {
+                gridLayer.style.backgroundImage = `radial-gradient(${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '20px 20px';
+            } else if(pattern === 'lines') {
+                gridLayer.style.backgroundImage = `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 0, transparent 50%)`;
+                gridLayer.style.backgroundSize = '30px 30px';
+            } else if(pattern === 'none') {
+                gridLayer.style.backgroundImage = 'none';
+            }
+        }
+        
+        // --- إعدادات القائمة (Toggle) ---
+        const settingsToggle = document.getElementById('settings-toggle');
+        if(settingsToggle){
+            settingsToggle.onclick = function() {
+                const content = document.getElementById('settings-content');
+                const icon = this.querySelector('i');
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            };
+        }
+
+        // --- إعدادات القائمة الجانبية (Desktop) ---
+        const settingsBtnFloating = document.getElementById('settings-btn-floating');
+        const settingsSidebar = document.getElementById('settings-sidebar');
+        const closeSettings = document.getElementById('close-settings');
+
+        if(settingsBtnFloating){
+            settingsBtnFloating.onclick = () => settingsSidebar.classList.add('open');
+            closeSettings.onclick = () => settingsSidebar.classList.remove('open');
+            document.addEventListener('click', (e) => {
+                if (settingsSidebar.classList.contains('open') && !settingsSidebar.contains(e.target) && !settingsBtnFloating.contains(e.target)) {
+                    settingsSidebar.classList.remove('open');
+                }
+            });
+        }
+
+        function resetSettings() {
+            localStorage.removeItem('theme');
+            localStorage.removeItem('fontFamily');
+            localStorage.removeItem('primaryColor');
+            localStorage.removeItem('primaryGrad');
+            localStorage.removeItem('bgPattern');
+            location.reload();
         }
 
         // تحميل الإعدادات
         const savedTheme = localStorage.getItem('theme') || 'dark';
         setTheme(savedTheme);
-        const savedSize = localStorage.getItem('fontSize');
-        if(savedSize) { document.body.style.fontSize = savedSize + 'px'; document.getElementById('font-size-slider').value = savedSize; }
         const savedFont = localStorage.getItem('fontFamily');
         if(savedFont) { document.body.style.fontFamily = savedFont; document.getElementById('font-family-select').value = savedFont; }
+        const savedColor = localStorage.getItem('primaryColor'); if(savedColor) document.documentElement.style.setProperty('--primary', savedColor);
+        const savedGrad = localStorage.getItem('primaryGrad'); if(savedGrad) document.documentElement.style.setProperty('--grad', savedGrad);
+        const savedPattern = localStorage.getItem('bgPattern') || 'grid'; setPattern(savedPattern);
 
         // --- إخفاء شاشة التحميل ---
         window.addEventListener('load', () => {
@@ -1597,8 +1797,7 @@
         style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
         <div
             style="background:#1a1a1a; padding:30px; border-radius:20px; border:1px solid #333; width:90%; max-width:400px; position:relative;">
-            <i class="fas fa-times" onclick="closeCheckout()"
-                style="position:absolute; top:20px; left:20px; cursor:pointer; color:#666;"></i>
+            <i class="fas fa-times" onclick="closeCheckout()" style="position:absolute; top:20px; left:20px; cursor:pointer; color:#666;"></i>
             <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;">بيانات الاستلام 🚚</h2>
 
             <div style="display:flex; flex-direction:column; gap:15px;">
@@ -1618,8 +1817,7 @@
                     <option value="فودافون كاش">📱 فودافون كاش</option>
                 </select>
 
-                <button onclick="confirmFinalOrder()" class="btn" style="width:100%; margin:0; padding:15px;">إرسال
-                    الطلب عبر واتساب</button>
+                <button onclick="confirmFinalOrder()" class="btn" style="width:100%; margin:0; padding:15px;">إرسال الطلب عبر واتساب</button>
             </div>
         </div>
     </div>

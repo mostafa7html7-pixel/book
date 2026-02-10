@@ -6,6 +6,7 @@
     <title>تواصل معنا - كتب الفشن</title>
     <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/book-236-444346.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -92,16 +93,125 @@
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: rotate(45deg) translate(-5px, -5px); }
 
+        /* --- قائمة الموبايل والإعدادات --- */
+        .mobile-menu {
+            position: fixed; top: 80px; left: 0; width: 100%; height: calc(100vh - 80px);
+            background: var(--header-bg); z-index: 99; transform: translateX(-100%);
+            transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 20px;
+            overflow-y: auto; backdrop-filter: blur(10px); border-top: 1px solid var(--border-color);
+        }
+        .mobile-menu.open { transform: translateX(0); }
+        .mobile-menu a { color: var(--text-sec); text-decoration: none; font-weight: 600; font-size: 18px; transition: 0.3s; }
+        .mobile-menu a:hover { color: var(--primary); }
+
+        /* إعدادات القائمة */
+        .menu-settings { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .menu-settings h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .setting-item { margin-bottom: 20px; }
+        .setting-item label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; color: var(--text-main); }
+        
+        .theme-options { display: flex; gap: 10px; }
+        .theme-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .theme-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        select.font-select {
+            width: 100%; padding: 8px; border-radius: 8px; background: var(--input-bg);
+            border: 1px solid var(--border-color); color: var(--text-main); outline: none;
+        }
+        
+        .color-options { display: flex; gap: 10px; justify-content: space-between; margin-top: 10px; }
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid var(--border-color); transition: 0.3s; }
+        .color-btn:hover { transform: scale(1.2); border-color: var(--text-main); }
+
+        .pattern-options { display: flex; gap: 5px; margin-top: 10px; }
+        .pattern-btn { flex: 1; padding: 8px; font-size: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .pattern-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .language-options { display: flex; gap: 10px; margin-top: 10px; }
+        .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
+
         /* --- السلة الجانبية --- */
-        .cart-sidebar { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: var(--card-bg); border-left: 1px solid var(--border-color); z-index: 200; transition: 0.3s ease; padding: 20px; overflow-y: auto; }
+        .cart-sidebar {
+            position: fixed; top: 0; right: -400px; width: 380px; height: 100vh;
+            background: var(--card-bg); backdrop-filter: blur(15px);
+            border-left: 1px solid var(--border-color); z-index: 200;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding: 25px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+            display: flex; flex-direction: column;
+        }
         .cart-sidebar.open { right: 0; }
-        .cart-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .cart-item img { width: 50px; height: 70px; object-fit: cover; border-radius: 5px; }
-        .cart-item-details { flex: 1; }
-        .cart-item-title { font-size: 14px; font-weight: bold; }
-        .cart-item-price { color: var(--primary); font-size: 13px; }
-        .remove-item { color: #ff4e31; cursor: pointer; transition: 0.3s; }
-        .remove-item:hover { transform: scale(1.2); }
+
+        .cart-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cart-title { font-size: 24px; font-weight: 900; color: var(--text-main); }
+        .close-cart {
+            width: 32px; height: 32px; background: var(--input-bg);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px; color: var(--text-sec); transition: 0.3s;
+        }
+        .close-cart:hover { background: var(--primary); color: var(--primary); transform: rotate(90deg); }
+
+        .cart-items {
+            flex: 1; display: flex; flex-direction: column; gap: 15px;
+            margin-bottom: 20px; overflow-y: auto; padding-right: 5px;
+        }
+        .cart-items::-webkit-scrollbar { width: 4px; }
+        .cart-items::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .cart-item {
+            background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 12px; display: flex; align-items: center;
+            gap: 15px; transition: 0.3s; position: relative;
+        }
+        .cart-item:hover { background: var(--border-color); border-color: var(--text-sec); transform: translateX(-3px); }
+        .cart-item img { width: 60px; height: 85px; object-fit: cover; border-radius: 10px; }
+        .cart-item-details { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .cart-item-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .cart-item-price { color: var(--primary); font-size: 15px; font-weight: 800; }
+        .remove-item {
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 68, 68, 0.1); color: #ff4444; border-radius: 50%;
+            cursor: pointer; transition: 0.3s; font-size: 12px; margin-right: 0;
+        }
+        .remove-item:hover { background: #ff4444; color: white; transform: scale(1.1); }
+
+        .cart-total {
+            font-size: 20px; font-weight: 900; margin-bottom: 15px;
+            background: var(--input-bg); padding: 15px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex; align-items: center; gap: 8px; margin-top: 6px;
+            background: var(--input-bg); padding: 3px; border-radius: 20px; width: fit-content;
+        }
+        .qty-btn {
+            width: 22px; height: 22px; border-radius: 50%; border: none;
+            color: white; font-weight: bold; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;
+        }
+        .qty-plus { background-color: #00c851; }
+        .qty-plus:hover { background-color: #007e33; }
+        .qty-minus { background-color: #ff4444; }
+        .qty-minus:hover { background-color: #cc0000; }
+        .qty-display { font-size: 13px; font-weight: bold; min-width: 18px; text-align: center; color: var(--text-main); }
+
+        /* --- تحسين السلة للموبايل --- */
+        @media (max-width: 768px) {
+            .cart-sidebar { width: 85%; right: -85%; border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.8); }
+            .cart-sidebar.open { right: 0; }
+            .cart-item { padding: 15px; margin-bottom: 10px; }
+            .qty-btn { width: 28px; height: 28px; font-size: 16px; }
+        }
 
         /* --- محتوى التواصل --- */
         .contact { padding: 120px 5% 50px; max-width: 1200px; margin: 0 auto; text-align: center; }
@@ -140,26 +250,65 @@
         }
 
         @media (max-width: 768px) {
-            .header { padding: 10px 20px; }
-            .logo-txt { font-size: 22px; }
-            .nav-links { 
-                position: fixed; 
-                top: 70px; 
-                left: -100%; 
-                width: 100%; 
-                height: calc(100vh - 70px); 
-                background: var(--header-bg); 
-                flex-direction: column; 
-                align-items: center; 
-                justify-content: center; 
-                padding: 20px; 
-                transition: 0.3s; 
-                gap: 30px;
-            }
-            .nav-links a { font-size: 24px; }
-            .nav-links.active { left: 0; }
+            .header { padding: 10px 15px; }
+            .logo-txt { font-size: 20px; }
+            .nav-links { display: none; }
             .hamburger { display: flex; }
+            .nav-right { gap: 8px; }
+            .theme-toggle, .cart-btn { width: 38px; height: 38px; }
         }
+        
+        /* --- زر البحث للموبايل --- */
+        .search-btn-mobile { display: none; width: 35px; height: 35px; border-radius: 50%; align-items: center; justify-content: center; cursor: pointer; color: var(--text-sec); border: 1px solid var(--border-color); transition: 0.3s; }
+        .search-btn-mobile:hover { color: var(--primary); border-color: var(--primary); }
+        
+        .mobile-search-bar {
+            position: fixed; top: 60px; left: 0; width: 100%; background: var(--header-bg); padding: 10px 15px;
+            z-index: 98; border-bottom: 1px solid var(--border-color); transform: translateY(-200%); transition: 0.3s ease-in-out;
+            display: flex; justify-content: center; backdrop-filter: blur(10px);
+        }
+        .mobile-search-bar.open { transform: translateY(0); }
+        .mobile-search-bar input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); outline: none; font-size: 14px; height: 35px; }
+
+        @media (max-width: 768px) {
+            .search-btn-mobile { display: flex; }
+            .mobile-search-bar { top: 60px; } /* Adjust based on header height */
+        }
+
+        /* --- زر الإعدادات العائم (Desktop) --- */
+        .settings-btn-floating {
+            position: fixed; top: 50%; left: 0; transform: translateY(-50%);
+            background: var(--card-bg); border: 1px solid var(--border-color); border-left: none;
+            padding: 10px; border-radius: 0 10px 10px 0; cursor: pointer; z-index: 999;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2); transition: 0.3s; color: var(--primary); font-size: 18px;
+        }
+        .settings-btn-floating:hover { background: var(--primary); color: white; padding-left: 15px; }
+
+        /* --- قائمة الإعدادات الجانبية (Desktop) --- */
+        .settings-sidebar {
+            position: fixed; top: 0; left: -350px; width: 300px; height: 100vh;
+            background: var(--card-bg); border-right: 1px solid var(--border-color); z-index: 1000;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); padding: 25px; overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3); backdrop-filter: blur(15px);
+        }
+        .settings-sidebar.open { left: 0; }
+        
+        .settings-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+        }
+        .settings-header h3 { margin: 0; font-size: 18px; color: var(--primary); }
+        .close-settings { cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .close-settings:hover { color: var(--primary); transform: rotate(90deg); }
+
+        /* إخفاء الزر والقائمة في الموبايل */
+        @media (max-width: 768px) {
+            .settings-btn-floating, .settings-sidebar { display: none; }
+        }
+        
+        /* تعديل بسيط لضمان ظهور المحتوى */
+        .settings-content .setting-item { margin-bottom: 20px; }
+        .settings-content label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
 
         /* --- Animations (تأثيرات الحركة) --- */
         @keyframes fadeInUp {
@@ -203,6 +352,10 @@
     <div class="bg-grid"><div class="grid-layer"></div></div>
 
     <header class="header">
+        <div class="mobile-search-bar" id="mobile-search-bar">
+            <input type="text" placeholder="ابحث عن كتابك..." id="mobile-search-input">
+        </div>
+
         <a href="index.html" class="logo">
             <span class="logo-txt">كتب الفشن</span>
             <div class="logo-box"><i class="fas fa-book-open"></i></div>
@@ -216,19 +369,146 @@
 
         <div style="display: flex; gap: 15px; align-items: center;">
             <div class="theme-toggle" id="theme-toggle"><i class="fas fa-sun"></i></div>
+            <div class="search-btn-mobile" id="search-btn-mobile"><i class="fas fa-search"></i></div>
             <div class="cart-btn" id="cart-btn"><i class="fas fa-shopping-cart"></i></div>
             <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
         </div>
     </header>
 
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="color: var(--primary);">سلتك</h2>
-            <i class="fas fa-times" id="close-cart" style="cursor: pointer;"></i>
+    <!-- قائمة الموبايل الجديدة -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html">الرئيسية</a>
+        <a href="index22.html">المتجر</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">تواصل معنا</a>
+        
+        <div class="menu-settings">
+            <button id="settings-toggle" style="width:100%; background:none; border:none; color:var(--primary); font-size:18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:10px 0; border-bottom: 1px solid var(--border-color);">
+                ⚙️ إعدادات العرض <i class="fas fa-chevron-down" style="transition:0.3s"></i>
+            </button>
+            
+            <div id="settings-content" style="display:none; padding-top:15px;">
+                <div class="setting-item">
+                    <label>الإضاءة</label>
+                    <div class="theme-options">
+                        <button class="theme-btn" id="btn-light" onclick="setTheme('light')">📜 عتيق</button>
+                        <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نوع الخط</label>
+                    <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                        <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
+                        <option value="'Amiri', serif">أميري (نسخ)</option>
+                        <option value="'Cairo', sans-serif">كايرو (حديث)</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>تباعد الأسطر</label>
+                    <input type="range" min="1.2" max="2.2" step="0.1" value="1.6" id="line-height-slider" oninput="setLineHeight(this.value)">
+                </div>
+
+                <div class="setting-item">
+                    <label>لون التمييز</label>
+                    <div class="color-options">
+                        <div class="color-btn" style="background: #ff5e3a;" onclick="setPrimaryColor('#ff5e3a')"></div>
+                        <div class="color-btn" style="background: #00c851;" onclick="setPrimaryColor('#00c851')"></div>
+                        <div class="color-btn" style="background: #33b5e5;" onclick="setPrimaryColor('#33b5e5')"></div>
+                        <div class="color-btn" style="background: #aa66cc;" onclick="setPrimaryColor('#aa66cc')"></div>
+                        <div class="color-btn" style="background: #ffbb33;" onclick="setPrimaryColor('#ffbb33')"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نمط الخلفية</label>
+                    <div class="pattern-options">
+                        <button class="pattern-btn" onclick="setPattern('grid')">شبكة</button>
+                        <button class="pattern-btn" onclick="setPattern('dots')">نقط</button>
+                        <button class="pattern-btn" onclick="setPattern('lines')">خطوط</button>
+                        <button class="pattern-btn" onclick="setPattern('none')">بدون</button>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="resetSettings()" style="width:100%; margin-top:10px; background:var(--card-bg); border:1px solid var(--border-color);">
+                    إعادة ضبط الإعدادات ↺
+                </button>
+            </div>
         </div>
-        <div id="cart-items"></div>
-        <div id="cart-total" style="font-weight: bold; margin: 20px 0; border-top: 1px solid var(--border-color); pt-20px;">المجموع: 0$</div>
-        <button class="btn" id="checkout-start">إتمام الطلب الآن</button>
+    </div>
+
+    <!-- زر الإعدادات العائم (للشاشات الكبيرة) -->
+    <div class="settings-btn-floating" id="settings-btn-floating">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <!-- قائمة الإعدادات الجانبية (للشاشات الكبيرة) -->
+    <div class="settings-sidebar" id="settings-sidebar">
+        <div class="settings-header">
+            <h3>إعدادات العرض</h3>
+            <i class="fas fa-times close-settings" id="close-settings"></i>
+        </div>
+        <div class="settings-content">
+            <div class="setting-item">
+                <label>الإضاءة</label>
+                <div class="theme-options">
+                    <button class="theme-btn" onclick="setTheme('light')">📜 عتيق</button>
+                    <button class="theme-btn" onclick="setTheme('dark')">🌑 ليلي</button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label>نوع الخط</label>
+                <select class="font-select" onchange="setFontFamily(this.value)">
+                    <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
+                    <option value="'Amiri', serif">أميري (نسخ)</option>
+                    <option value="'Cairo', sans-serif">كايرو (حديث)</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label>تباعد الأسطر</label>
+                <input type="range" min="1.2" max="2.2" step="0.1" value="1.6" id="line-height-slider" oninput="setLineHeight(this.value)">
+            </div>
+
+            <div class="setting-item">
+                <label>لون التمييز</label>
+                <div class="color-options">
+                    <div class="color-btn" style="background: #ff5e3a;" onclick="setPrimaryColor('#ff5e3a')"></div>
+                    <div class="color-btn" style="background: #00c851;" onclick="setPrimaryColor('#00c851')"></div>
+                    <div class="color-btn" style="background: #33b5e5;" onclick="setPrimaryColor('#33b5e5')"></div>
+                    <div class="color-btn" style="background: #aa66cc;" onclick="setPrimaryColor('#aa66cc')"></div>
+                    <div class="color-btn" style="background: #ffbb33;" onclick="setPrimaryColor('#ffbb33')"></div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label>نمط الخلفية</label>
+                <div class="pattern-options">
+                    <button class="pattern-btn" onclick="setPattern('grid')">شبكة</button>
+                    <button class="pattern-btn" onclick="setPattern('dots')">نقط</button>
+                    <button class="pattern-btn" onclick="setPattern('lines')">خطوط</button>
+                    <button class="pattern-btn" onclick="setPattern('none')">بدون</button>
+                </div>
+            </div>
+
+            <button class="btn" onclick="resetSettings()" style="width:100%; margin-top:10px; background:var(--card-bg); border:1px solid var(--border-color);">
+                إعادة ضبط ↺
+            </button>
+        </div>
+    </div>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2 class="cart-title" data-i18n="cart_title">السلة</h2>
+            <i class="fas fa-times close-cart" id="close-cart"></i>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="empty-cart" data-i18n="cart_empty">السلة فارغة</p>
+        </div>
+        <div class="cart-total" id="cart-total"><span data-i18n="total">المجموع</span>: 0$</div>
+        <button class="btn" id="checkout-start" data-i18n="checkout">إتمام الطلب الآن</button>
     </div>
 
     <div id="checkout-modal">
@@ -283,6 +563,7 @@
         const cartTotalDisplay = document.getElementById('cart-total');
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('nav-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
 
         let cart = JSON.parse(localStorage.getItem('fashon_cart')) || [];
 
@@ -296,20 +577,27 @@
                 cartItemsContainer.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">السلة فارغة (❁´◡`❁)</p>';
             } else {
                 cart.forEach((item, index) => {
-                    total += item.price;
+                    const q = item.quantity || 1;
+                    total += item.price * q;
                     cartItemsContainer.innerHTML += `
                         <div class="cart-item">
                             <img src="${item.image}">
                             <div class="cart-item-details">
                                 <div class="cart-item-title">${item.title}</div>
                                 <div class="cart-item-price">${item.price}$</div>
+                                <div class="quantity-controls">
+                                    <button class="qty-btn qty-minus" onclick="updateItemQuantity(event, ${index}, -1)">-</button>
+                                    <span class="qty-display">${q}</span>
+                                    <button class="qty-btn qty-plus" onclick="updateItemQuantity(event, ${index}, 1)">+</button>
+                                </div>
                             </div>
                             <i class="fas fa-trash remove-item" onclick="handleRemove(event, ${index})"></i>
                         </div>`;
                 });
             }
-            cartTotalDisplay.textContent = `المجموع: ${total}$`;
-            document.documentElement.style.setProperty('--cart-count', `"${cart.length}"`);
+            cartTotalDisplay.innerHTML = `<span>المجموع</span> <span style="color:var(--primary)">${total}$</span>`;
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            document.documentElement.style.setProperty('--cart-count', `"${count}"`);
         }
 
         // الحذف الذكي
@@ -320,19 +608,29 @@
             updateCartUI();
         };
 
+        window.updateItemQuantity = function(event, index, change) {
+            event.stopPropagation();
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + change;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+                localStorage.setItem('fashon_cart', JSON.stringify(cart));
+                updateCartUI();
+            }
+        };
+
         // التحكم بالسلة والقائمة
         cartBtn.onclick = () => cartSidebar.classList.add('open');
         closeCart.onclick = () => cartSidebar.classList.remove('open');
         hamburger.onclick = (e) => { 
             e.stopPropagation(); 
-            navMenu.classList.toggle('active'); 
+            mobileMenu.classList.toggle('open'); 
             hamburger.classList.toggle('open');
         };
 
         document.onclick = (e) => {
-            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target)) {
+            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
                 cartSidebar.classList.remove('open');
-                navMenu.classList.remove('active');
+                mobileMenu.classList.remove('open');
                 hamburger.classList.remove('open');
             }
         };
@@ -366,8 +664,9 @@
             msg += `💳 *طريقة الدفع:* ${paymentMethod}\n\n📦 *الكتب:*\n`;
             let total = 0;
             cart.forEach((item, i) => { 
-                msg += `${i+1}. ${item.title} (${item.price}$)\n`; 
-                total += item.price;
+                const q = item.quantity || 1;
+                msg += `${i+1}. ${item.title} (${item.price}$) x ${q}\n`; 
+                total += item.price * q;
             });
             msg += `\n💰 *الإجمالي: ${total}$*`;
 
@@ -393,23 +692,126 @@
         updateCartUI();
         window.addEventListener('storage', () => updateCartUI());
 
-        // --- الوضع النهاري (Light Mode) ---
+        // --- إعدادات العرض (Settings Logic) ---
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
         const icon = themeToggle.querySelector('i');
 
-        // تحميل الثيم المحفوظ
-        if (localStorage.getItem('theme') === 'light') {
-            body.classList.add('light-mode');
-            icon.classList.replace('fa-sun', 'fa-moon');
+        // --- إعدادات القائمة الجانبية (Desktop) ---
+        const settingsBtnFloating = document.getElementById('settings-btn-floating');
+        const settingsSidebar = document.getElementById('settings-sidebar');
+        const closeSettings = document.getElementById('close-settings');
+
+        if(settingsBtnFloating){
+            settingsBtnFloating.onclick = () => settingsSidebar.classList.add('open');
+            closeSettings.onclick = () => settingsSidebar.classList.remove('open');
+            document.addEventListener('click', (e) => {
+                if (settingsSidebar.classList.contains('open') && !settingsSidebar.contains(e.target) && !settingsBtnFloating.contains(e.target)) {
+                    settingsSidebar.classList.remove('open');
+                }
+            });
+        }
+        
+        // --- زر البحث للموبايل ---
+        const searchBtnMobile = document.getElementById('search-btn-mobile');
+        const mobileSearchBar = document.getElementById('mobile-search-bar');
+        if(searchBtnMobile){
+            searchBtnMobile.onclick = () => {
+                mobileSearchBar.classList.toggle('open');
+            };
         }
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            const isLight = body.classList.contains('light-mode');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-        });
+        function setTheme(mode) {
+            if (mode === 'light') {
+                body.classList.add('light-mode');
+                icon.classList.replace('fa-sun', 'fa-moon');
+                document.getElementById('btn-light').classList.add('active');
+                document.getElementById('btn-dark').classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                icon.classList.replace('fa-moon', 'fa-sun');
+                document.getElementById('btn-dark').classList.add('active');
+                document.getElementById('btn-light').classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function setFontFamily(font) { document.body.style.fontFamily = font; localStorage.setItem('fontFamily', font); }
+        function setLineHeight(height) { document.body.style.lineHeight = height; localStorage.setItem('lineHeight', height); }
+        
+        function setPrimaryColor(color) {
+            document.documentElement.style.setProperty('--primary', color);
+            localStorage.setItem('primaryColor', color);
+            
+            const gradients = {
+                '#ff5e3a': 'linear-gradient(90deg, #ff4e31, #ff8c31)',
+                '#00c851': 'linear-gradient(90deg, #007e33, #00c851)',
+                '#33b5e5': 'linear-gradient(90deg, #0099cc, #33b5e5)',
+                '#aa66cc': 'linear-gradient(90deg, #9933cc, #aa66cc)',
+                '#ffbb33': 'linear-gradient(90deg, #ff8800, #ffbb33)'
+            };
+            if(gradients[color]) {
+                document.documentElement.style.setProperty('--grad', gradients[color]);
+                localStorage.setItem('primaryGrad', gradients[color]);
+            }
+        }
+        
+        function setPattern(pattern) {
+            const gridLayer = document.querySelector('.grid-layer');
+            if(!gridLayer) return;
+            localStorage.setItem('bgPattern', pattern);
+            gridLayer.style.backgroundImage = ''; gridLayer.style.backgroundSize = '';
+            const color = 'var(--border-color)'; 
+            if(pattern === 'grid') {
+                gridLayer.style.backgroundImage = `linear-gradient(to right, ${color} 1px, transparent 1px), linear-gradient(to bottom, ${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '60px 60px';
+            } else if(pattern === 'dots') {
+                gridLayer.style.backgroundImage = `radial-gradient(${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '20px 20px';
+            } else if(pattern === 'lines') {
+                gridLayer.style.backgroundImage = `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 0, transparent 50%)`;
+                gridLayer.style.backgroundSize = '30px 30px';
+            } else if(pattern === 'none') {
+                gridLayer.style.backgroundImage = 'none';
+            }
+        }
+        
+        // --- إعدادات القائمة (Toggle) ---
+        const settingsToggle = document.getElementById('settings-toggle');
+        if(settingsToggle){
+            settingsToggle.onclick = function() {
+                const content = document.getElementById('settings-content');
+                const icon = this.querySelector('i');
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            };
+        }
+
+        function resetSettings() {
+            localStorage.removeItem('theme');
+            localStorage.removeItem('fontFamily');
+            localStorage.removeItem('lineHeight');
+            localStorage.removeItem('primaryColor');
+            localStorage.removeItem('primaryGrad');
+            localStorage.removeItem('bgPattern');
+            location.reload();
+        }
+
+        // تحميل الإعدادات عند البدء
+        const savedTheme = localStorage.getItem('theme') || 'dark'; setTheme(savedTheme);
+        const savedFont = localStorage.getItem('fontFamily'); if(savedFont) { document.body.style.fontFamily = savedFont; document.getElementById('font-family-select').value = savedFont; }
+        const savedLineHeight = localStorage.getItem('lineHeight'); if(savedLineHeight) { document.body.style.lineHeight = savedLineHeight; document.getElementById('line-height-slider').value = savedLineHeight; }
+        const savedColor = localStorage.getItem('primaryColor'); if(savedColor) document.documentElement.style.setProperty('--primary', savedColor);
+        const savedGrad = localStorage.getItem('primaryGrad'); if(savedGrad) document.documentElement.style.setProperty('--grad', savedGrad);
+        const savedPattern = localStorage.getItem('bgPattern') || 'grid'; setPattern(savedPattern);
+
+        themeToggle.onclick = () => setTheme(body.classList.contains('light-mode') ? 'dark' : 'light');
 
         // --- إخفاء شاشة التحميل ---
         window.addEventListener('load', () => {

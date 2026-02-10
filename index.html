@@ -7,6 +7,7 @@
     <title>كتب الفشن</title>
     <link rel="icon" href="https://cdn.iconscout.com/icon/free/png-256/book-236-444346.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -162,7 +163,7 @@
             border: 1px solid var(--border-color);
             border-radius: 25px;
             color: var(--text-main);
-            text-align: right;
+            text-align: inherit;
             outline: none;
         }
 
@@ -272,6 +273,53 @@
             transform: rotate(45deg) translate(-5px, -5px);
         }
 
+        /* --- قائمة الموبايل والإعدادات --- */
+        .mobile-menu {
+            position: fixed; top: 80px; left: 0; width: 100%; height: calc(100vh - 80px);
+            background: var(--header-bg); z-index: 99; transform: translateX(-100%);
+            transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column; gap: 20px;
+            overflow-y: auto; backdrop-filter: blur(10px); border-top: 1px solid var(--border-color);
+        }
+        .mobile-menu.open { transform: translateX(0); }
+        .mobile-menu a { color: var(--text-sec); text-decoration: none; font-weight: 600; font-size: 18px; transition: 0.3s; }
+        .mobile-menu a:hover { color: var(--primary); }
+
+        /* إعدادات القائمة */
+        .menu-settings { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .menu-settings h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .setting-item { margin-bottom: 20px; }
+        .setting-item label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: bold; color: var(--text-main); }
+        
+        .theme-options { display: flex; gap: 10px; }
+        .theme-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .theme-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        select.font-select {
+            width: 100%; padding: 8px; border-radius: 8px; background: var(--input-bg);
+            border: 1px solid var(--border-color); color: var(--text-main); outline: none;
+        }
+
+        .color-options { display: flex; gap: 10px; justify-content: space-between; margin-top: 10px; }
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid var(--border-color); transition: 0.3s; }
+        .color-btn:hover { transform: scale(1.2); border-color: var(--text-main); }
+
+        .pattern-options { display: flex; gap: 5px; margin-top: 10px; }
+        .pattern-btn { flex: 1; padding: 8px; font-size: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .pattern-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .language-options { display: flex; gap: 10px; margin-top: 10px; }
+        .lang-btn { flex: 1; padding: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* --- تأثير العجينة (Dough Wave Effect) --- */
+        .click-effect { position: fixed; width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 3px solid rgba(255, 94, 58, 0.5); transform: translate(-50%, -50%) scale(0.5); pointer-events: none; z-index: 99999; animation: dough-wave 0.5s ease-out forwards; box-shadow: 0 0 15px rgba(255, 94, 58, 0.3); }
+        @keyframes dough-wave { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; border-width: 4px; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; border-width: 0; } }
+
+        /* --- تفاعل اللمس (Touch Interaction) --- */
+        button:active, a:active, .cart-item:active, .qty-btn:active, .setting-item:active { transform: scale(0.96); }
+
         /* --- Responsive --- */
         @media (max-width: 768px) {
             .header {
@@ -283,22 +331,7 @@
             }
 
             .nav-links {
-                position: fixed;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 70px);
-                background: var(--header-bg);
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                transition: 0.3s;
-                gap: 30px;
-            }
-
-            .nav-links.active {
-                left: 0;
+                display: none;
             }
 
             .nav-links a {
@@ -320,42 +353,83 @@
 
         /* --- السلة (Sidebar) --- */
         .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 350px;
-            height: 100vh;
-            background: var(--sidebar-bg);
-            border-left: 1px solid var(--border-color);
-            z-index: 200;
-            transition: 0.3s ease;
-            overflow-y: auto;
-            padding: 20px;
+            position: fixed; top: 0; right: -400px; width: 380px; height: 100vh;
+            background: var(--sidebar-bg); backdrop-filter: blur(15px);
+            border-left: 1px solid var(--border-color); z-index: 200;
+            transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding: 25px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+            display: flex; flex-direction: column;
         }
+        .cart-sidebar.open { right: 0; }
 
-        .cart-sidebar.open {
-            right: 0;
+        .cart-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
+        .cart-title { font-size: 24px; font-weight: 900; color: var(--text-main); }
+        .close-cart {
+            width: 32px; height: 32px; background: var(--input-bg);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px; color: var(--text-sec); transition: 0.3s;
+        }
+        .close-cart:hover { background: var(--primary); color: var(--primary); transform: rotate(90deg); }
+
+        .cart-items {
+            flex: 1; display: flex; flex-direction: column; gap: 15px;
+            margin-bottom: 20px; overflow-y: auto; padding-right: 5px;
+        }
+        .cart-items::-webkit-scrollbar { width: 4px; }
+        .cart-items::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
         .cart-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 12px; display: flex; align-items: center;
+            gap: 15px; transition: 0.3s; position: relative;
         }
-
-        .cart-item img {
-            width: 40px;
-            height: 60px;
-            object-fit: cover;
-        }
-
+        .cart-item:hover { background: var(--border-color); border-color: var(--text-sec); transform: translateX(-3px); }
+        .cart-item img { width: 60px; height: 85px; object-fit: cover; border-radius: 10px; }
+        .cart-item-details { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .cart-item-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .cart-item-type { color: #888; font-size: 11px; background: var(--border-color); padding: 2px 8px; border-radius: 4px; align-self: flex-start; }
+        .cart-item-price { color: var(--primary); font-size: 15px; font-weight: 800; }
         .remove-item {
-            color: #ff4e31;
-            cursor: pointer;
-            margin-right: auto;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 68, 68, 0.1); color: #ff4444; border-radius: 50%;
+            cursor: pointer; transition: 0.3s; font-size: 12px; margin-right: 0;
+        }
+        .remove-item:hover { background: #ff4444; color: white; transform: scale(1.1); }
+
+        .cart-total {
+            font-size: 20px; font-weight: 900; margin-bottom: 15px;
+            background: var(--input-bg); padding: 15px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex; align-items: center; gap: 8px; margin-top: 6px;
+            background: var(--input-bg); padding: 3px; border-radius: 20px; width: fit-content;
+        }
+        .qty-btn {
+            width: 22px; height: 22px; border-radius: 50%; border: none;
+            color: white; font-weight: bold; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;
+        }
+        .qty-plus { background-color: #00c851; }
+        .qty-plus:hover { background-color: #007e33; }
+        .qty-minus { background-color: #ff4444; }
+        .qty-minus:hover { background-color: #cc0000; }
+        .qty-display { font-size: 13px; font-weight: bold; min-width: 18px; text-align: center; color: var(--text-main); }
+
+        /* --- تحسين السلة للموبايل --- */
+        @media (max-width: 768px) {
+            .cart-sidebar { width: 85%; right: -85%; border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.8); }
+            .cart-sidebar.open { right: 0; }
+            .cart-item { padding: 15px; margin-bottom: 10px; }
+            .qty-btn { width: 28px; height: 28px; font-size: 16px; }
         }
 
         /* --- Hero --- */
@@ -498,16 +572,78 @@
         </div>
     </header>
 
+    <!-- قائمة الموبايل الجديدة -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html">الرئيسية</a>
+        <a href="index22.html">المتجر</a>
+        <a href="about.html">من نحن</a>
+        <a href="contact.html">تواصل معنا</a>
+        
+        <div class="menu-settings">
+            <button id="settings-toggle" style="width:100%; background:none; border:none; color:var(--primary); font-size:18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:10px 0; border-bottom: 1px solid var(--border-color);">
+                ⚙️ إعدادات العرض <i class="fas fa-chevron-down" style="transition:0.3s"></i>
+            </button>
+            
+            <div id="settings-content" style="display:none; padding-top:15px;">
+                <div class="setting-item">
+                    <label>الإضاءة</label>
+                    <div class="theme-options">
+                        <button class="theme-btn" id="btn-light" onclick="setTheme('light')">📜 عتيق</button>
+                        <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نوع الخط</label>
+                    <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                        <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
+                        <option value="'Amiri', serif">أميري (نسخ)</option>
+                        <option value="'Cairo', sans-serif">كايرو (حديث)</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label>تباعد الأسطر</label>
+                    <input type="range" min="1.2" max="2.2" step="0.1" value="1.6" id="line-height-slider" oninput="setLineHeight(this.value)">
+                </div>
+
+                <div class="setting-item">
+                    <label>لون التمييز</label>
+                    <div class="color-options">
+                        <div class="color-btn" style="background: #ff5e3a;" onclick="setPrimaryColor('#ff5e3a')"></div>
+                        <div class="color-btn" style="background: #00c851;" onclick="setPrimaryColor('#00c851')"></div>
+                        <div class="color-btn" style="background: #33b5e5;" onclick="setPrimaryColor('#33b5e5')"></div>
+                        <div class="color-btn" style="background: #aa66cc;" onclick="setPrimaryColor('#aa66cc')"></div>
+                        <div class="color-btn" style="background: #ffbb33;" onclick="setPrimaryColor('#ffbb33')"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>نمط الخلفية</label>
+                    <div class="pattern-options">
+                        <button class="pattern-btn" onclick="setPattern('grid')">شبكة</button>
+                        <button class="pattern-btn" onclick="setPattern('dots')">نقط</button>
+                        <button class="pattern-btn" onclick="setPattern('lines')">خطوط</button>
+                        <button class="pattern-btn" onclick="setPattern('none')">بدون</button>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="resetSettings()" style="width:100%; margin-top:10px; background:var(--card-bg); border:1px solid var(--border-color);">
+                    إعادة ضبط الإعدادات ↺
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="cart-sidebar" id="cart-sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="color: var(--primary);">السلة</h2>
-            <i class="fas fa-times" id="close-cart" style="cursor: pointer;"></i>
+        <div class="cart-header">
+            <h2 class="cart-title">السلة</h2>
+            <i class="fas fa-times close-cart" id="close-cart"></i>
         </div>
-        <div id="cart-items">
-            <p style="text-align: center; color: var(--text-sec);">السلة فارغة</p>
+        <div class="cart-items" id="cart-items">
+            <p class="empty-cart">السلة فارغة</p>
         </div>
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-        <div id="cart-total" style="font-weight: bold; margin-bottom: 20px;">المجموع: 0$</div>
+        <div class="cart-total" id="cart-total">المجموع: 0$</div>
         <button class="btn" style="width: 100%; margin: 0;">إتمام الدفع</button>
     </div>
 
@@ -515,7 +651,7 @@
         <div class="hero-inner">
             <div
                 style="background: rgba(255,87,34,0.1); color: #ff8c31; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 20px;">
-                🔥 عروض حصرية: أي كتاب PDF بـ 1$ فقط!
+                🔥 عروض حصرية: أي كتاب PDF بـ 0$ فقط!
             </div>
             <h1 style="font-size: 3rem; margin-bottom: 20px;">أشعل شغفك <span class="grad-txt">بالقراءة</span></h1>
             <p style="color: var(--text-sec); margin-bottom: 30px;">اكتشف عالم الكتب الرقمية بأسعار مذهلة.</p>
@@ -547,7 +683,8 @@
                 cartItemsContainer.innerHTML = '<p class="empty-cart"> (❁´◡`❁) السلة فارغة </p>';
             } else {
                 cart.forEach((item, index) => {
-                    total += item.price;
+                    const q = item.quantity || 1;
+                    total += item.price * q;
                     cartItemsContainer.innerHTML += `
                     <div class="cart-item">
                         <img src="${item.image}" alt="${item.title}">
@@ -555,6 +692,11 @@
                             <div class="cart-item-title">${item.title}</div>
                             <div class="cart-item-type">${item.type === 'paper' ? 'ورقي' : 'PDF'}</div>
                             <div class="cart-item-price">${item.price}$</div>
+                            <div class="quantity-controls">
+                                <button class="qty-btn qty-minus" onclick="updateItemQuantity(event, ${index}, -1)">-</button>
+                                <span class="qty-display">${q}</span>
+                                <button class="qty-btn qty-plus" onclick="updateItemQuantity(event, ${index}, 1)">+</button>
+                            </div>
                         </div>
                         <i class="fas fa-trash remove-item" onclick="handleRemove(event, ${index})"></i>
                     </div>
@@ -562,8 +704,9 @@
                 });
             }
 
-            cartTotalDisplay.textContent = `المجموع: ${total}$`;
-            document.documentElement.style.setProperty('--cart-count', `"${cart.length}"`);
+            cartTotalDisplay.innerHTML = `<span>المجموع</span> <span style="color:var(--primary)">${total}$</span>`;
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            document.documentElement.style.setProperty('--cart-count', `"${count}"`);
             localStorage.setItem('fashon_cart', JSON.stringify(cart));
         }
 
@@ -581,11 +724,22 @@
             updateCartUI();
         };
 
+        // دالة تحديث الكمية
+        window.updateItemQuantity = function(event, index, change) {
+            event.stopPropagation();
+            if (cart[index]) {
+                cart[index].quantity = (cart[index].quantity || 1) + change;
+                if (cart[index].quantity <= 0) cart.splice(index, 1);
+                localStorage.setItem('fashon_cart', JSON.stringify(cart));
+                updateCartUI();
+            }
+        };
+
         // 5. التحكم في القوائم (محدث ليعمل الموبايل والحذف)
         hamburger.onclick = (e) => {
             e.stopPropagation();
             hamburger.classList.toggle('open');
-            document.getElementById('nav-menu').classList.toggle('active');
+            mobileMenu.classList.toggle('open');
         };
 
         cartBtn.onclick = () => cartSidebar.classList.add('open');
@@ -593,9 +747,9 @@
 
         // إغلاق عند النقر في الخارج مع استثناء عناصر السلة والقائمة
         document.onclick = (e) => {
-            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target)) {
+            if (!cartSidebar.contains(e.target) && !cartBtn.contains(e.target) && !hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
                 cartSidebar.classList.remove('open');
-                document.getElementById('nav-menu').classList.remove('active');
+                mobileMenu.classList.remove('open');
                 hamburger.classList.remove('open');
             }
         };
@@ -609,27 +763,116 @@
             }
         });
 
-        // --- الوضع النهاري (Light Mode) ---
+        // --- إعدادات العرض (Settings Logic) ---
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
         const icon = themeToggle.querySelector('i');
 
-        // تحميل الثيم المحفوظ
-        if (localStorage.getItem('theme') === 'light') {
-            body.classList.add('light-mode');
-            icon.classList.replace('fa-sun', 'fa-moon');
+        function setTheme(mode) {
+            if (mode === 'light') {
+                body.classList.add('light-mode');
+                icon.classList.replace('fa-sun', 'fa-moon');
+                document.getElementById('btn-light').classList.add('active');
+                document.getElementById('btn-dark').classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                icon.classList.replace('fa-moon', 'fa-sun');
+                document.getElementById('btn-dark').classList.add('active');
+                document.getElementById('btn-light').classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            }
         }
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            const isLight = body.classList.contains('light-mode');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-        });
+        function setFontFamily(font) { document.body.style.fontFamily = font; localStorage.setItem('fontFamily', font); }
+        function setLineHeight(height) { document.body.style.lineHeight = height; localStorage.setItem('lineHeight', height); }
+        
+        function setPrimaryColor(color) {
+            document.documentElement.style.setProperty('--primary', color);
+            localStorage.setItem('primaryColor', color);
+            
+            const gradients = {
+                '#ff5e3a': 'linear-gradient(90deg, #ff4e31, #ff8c31)',
+                '#00c851': 'linear-gradient(90deg, #007e33, #00c851)',
+                '#33b5e5': 'linear-gradient(90deg, #0099cc, #33b5e5)',
+                '#aa66cc': 'linear-gradient(90deg, #9933cc, #aa66cc)',
+                '#ffbb33': 'linear-gradient(90deg, #ff8800, #ffbb33)'
+            };
+            if(gradients[color]) {
+                document.documentElement.style.setProperty('--grad', gradients[color]);
+                localStorage.setItem('primaryGrad', gradients[color]);
+            }
+        }
+        
+        function setPattern(pattern) {
+            const gridLayer = document.querySelector('.grid-layer');
+            if(!gridLayer) return;
+            localStorage.setItem('bgPattern', pattern);
+            gridLayer.style.backgroundImage = ''; gridLayer.style.backgroundSize = '';
+            const color = 'var(--border-color)'; 
+            if(pattern === 'grid') {
+                gridLayer.style.backgroundImage = `linear-gradient(to right, ${color} 1px, transparent 1px), linear-gradient(to bottom, ${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '60px 60px';
+            } else if(pattern === 'dots') {
+                gridLayer.style.backgroundImage = `radial-gradient(${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '20px 20px';
+            } else if(pattern === 'lines') {
+                gridLayer.style.backgroundImage = `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 0, transparent 50%)`;
+                gridLayer.style.backgroundSize = '30px 30px';
+            } else if(pattern === 'none') {
+                gridLayer.style.backgroundImage = 'none';
+            }
+        }
+        
+        // --- إعدادات القائمة (Toggle) ---
+        const settingsToggle = document.getElementById('settings-toggle');
+        if(settingsToggle){
+            settingsToggle.onclick = function() {
+                const content = document.getElementById('settings-content');
+                const icon = this.querySelector('i');
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            };
+        }
+
+        function resetSettings() {
+            localStorage.removeItem('theme');
+            localStorage.removeItem('fontFamily');
+            localStorage.removeItem('lineHeight');
+            localStorage.removeItem('primaryColor');
+            localStorage.removeItem('primaryGrad');
+            localStorage.removeItem('bgPattern');
+            location.reload();
+        }
+
+        // تحميل الإعدادات عند البدء
+        const savedTheme = localStorage.getItem('theme') || 'dark'; setTheme(savedTheme);
+        const savedFont = localStorage.getItem('fontFamily'); if(savedFont) { document.body.style.fontFamily = savedFont; document.getElementById('font-family-select').value = savedFont; }
+        const savedLineHeight = localStorage.getItem('lineHeight'); if(savedLineHeight) { document.body.style.lineHeight = savedLineHeight; document.getElementById('line-height-slider').value = savedLineHeight; }
+        const savedColor = localStorage.getItem('primaryColor'); if(savedColor) document.documentElement.style.setProperty('--primary', savedColor);
+        const savedGrad = localStorage.getItem('primaryGrad'); if(savedGrad) document.documentElement.style.setProperty('--grad', savedGrad);
+        const savedPattern = localStorage.getItem('bgPattern') || 'grid'; setPattern(savedPattern);
+
+        themeToggle.onclick = () => setTheme(body.classList.contains('light-mode') ? 'dark' : 'light');
 
         // --- إخفاء شاشة التحميل ---
         window.addEventListener('load', () => {
             document.body.classList.add('loaded');
+        });
+
+        // --- تأثير النقر التفاعلي ---
+        document.addEventListener('click', (e) => {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.style.left = `${e.clientX}px`;
+            effect.style.top = `${e.clientY}px`;
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
         });
 // فتح نافذة البيانات عند الضغط على إتمام الدفع في السلة
 const checkoutBtn = document.querySelector('.cart-sidebar .btn');
@@ -682,8 +925,9 @@ function confirmOrder() {
 
     let total = 0;
     cart.forEach((item, index) => {
-        message += `${index + 1}. ${item.title} (${item.type === 'paper' ? 'ورقي' : 'PDF'}) - ${item.price}$\n`;
-        total += item.price;
+        const q = item.quantity || 1;
+        message += `${index + 1}. ${item.title} (${item.type === 'paper' ? 'ورقي' : 'PDF'}) - ${item.price}$ x ${q}\n`;
+        total += item.price * q;
     });
 
     message += `\n💰 *الإجمالي النهائي: ${total}$*`;

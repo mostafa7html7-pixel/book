@@ -105,7 +105,7 @@
             width: 100%; padding: 12px 20px; background: #111; border: 1px solid #333;
             border-radius: 25px; color: white; text-align: right; outline: none; transition: 0.3s;
         }
-        .search input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 94, 58, 0.5); }
+        .search input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 94, 58, 0.5); text-align: inherit; }
         .search i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #666; }
 
         .nav-right { display: flex; align-items: center; gap: 20px; }
@@ -223,7 +223,10 @@
             .nav-links { display: none; }
             .hamburger { display: flex; }
             .nav-center { display: none; }
-            .header { padding: 10px 20px; }
+            .header { padding: 10px 15px; }
+            .logo-txt { font-size: 20px; }
+            .nav-right { gap: 8px; }
+            .theme-toggle, .cart-btn { width: 38px; height: 38px; }
             .cart-page { padding: 100px 20px 50px; }
             .cart-item { flex-direction: column; text-align: center; }
             .cart-item-details { text-align: center; }
@@ -303,45 +306,60 @@
         <a href="contact.html">تواصل معنا</a>
         
         <div class="menu-settings">
-            <h3>⚙️ إعدادات العرض</h3>
+            <button id="settings-toggle" style="width:100%; background:none; border:none; color:var(--primary); font-size:18px; font-weight:bold; display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:10px 0; border-bottom: 1px solid var(--border-color);">
+                ⚙️ إعدادات العرض <i class="fas fa-chevron-down" style="transition:0.3s"></i>
+            </button>
             
             <div class="setting-item">
-                <label>الإضاءة</label>
+                <label data-i18n="theme">الإضاءة</label>
                 <div class="theme-options">
-                    <button class="theme-btn active" id="btn-old" onclick="setTheme('old')">📜 عتيق</button>
-                    <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">🌑 ليلي</button>
+                    <button class="theme-btn active" id="btn-old" onclick="setTheme('old')" data-i18n="theme_vintage">📜 عتيق</button>
+                    <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')" data-i18n="theme_dark">🌑 ليلي</button>
                 </div>
             </div>
 
             <div class="setting-item">
-                <label>حجم الخط</label>
-                <input type="range" min="14" max="22" value="16" id="font-size-slider" oninput="setFontSize(this.value)">
+                <label data-i18n="font_type">نوع الخط</label>
+                <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
+                    <option value="'Tajawal', sans-serif" data-i18n="font_tajawal">تجوال (الافتراضي)</option>
+                    <option value="'Amiri', serif" data-i18n="font_amiri">أميري (نسخ)</option>
+                    <option value="'Cairo', sans-serif" data-i18n="font_cairo">كايرو (حديث)</option>
+                </select>
             </div>
 
             <div class="setting-item">
-                <label>نوع الخط</label>
-                <select class="font-select" onchange="setFontFamily(this.value)" id="font-family-select">
-                    <option value="'Tajawal', sans-serif">تجوال (الافتراضي)</option>
-                    <option value="'Amiri', serif">أميري (نسخ)</option>
-                    <option value="'Cairo', sans-serif">كايرو (حديث)</option>
-                </select>
+                <label data-i18n="bg_pattern">نمط الخلفية</label>
+                <div class="pattern-options">
+                    <button class="pattern-btn" onclick="setPattern('grid')" data-i18n="pattern_grid">شبكة</button>
+                    <button class="pattern-btn" onclick="setPattern('dots')" data-i18n="pattern_dots">نقط</button>
+                    <button class="pattern-btn" onclick="setPattern('lines')" data-i18n="pattern_lines">خطوط</button>
+                    <button class="pattern-btn" onclick="setPattern('none')" data-i18n="pattern_none">بدون</button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <label data-i18n="language">اللغة (Language)</label>
+                <div class="language-options">
+                    <button class="lang-btn active" id="btn-ar" onclick="setLanguage('ar')" data-i18n="lang_ar">العربية</button>
+                    <button class="lang-btn" id="btn-en" onclick="setLanguage('en')" data-i18n="lang_en">English</button>
+                </div>
             </div>
         </div>
     </div>
 
     <main class="cart-page">
-        <h1>السلة <span class="grad-txt">المشتريات</span></h1>
-        <p>مراجعة مشترياتك قبل الدفع.</p>
+        <h1><span data-i18n="cart_page_title_1">السلة</span> <span class="grad-txt" data-i18n="cart_page_title_2">المشتريات</span></h1>
+        <p data-i18n="cart_page_desc">مراجعة مشترياتك قبل الدفع.</p>
 
         <div class="cart-container">
             <div class="cart-items" id="cart-items">
-                <p class="empty-cart">السلة فارغة</p>
+                <p class="empty-cart" data-i18n="cart_empty">السلة فارغة</p>
             </div>
             <div class="cart-summary">
-                <div class="cart-total" id="cart-total">المجموع: 0$</div>
-                <button class="checkout-btn" id="checkout-btn">الدفع الآن</button>
+                <div class="cart-total" id="cart-total"><span data-i18n="total">المجموع</span>: 0$</div>
+                <button class="checkout-btn" id="checkout-btn" data-i18n="checkout_now">الدفع الآن</button>
                 <div class="back-to-store">
-                    <a href="index22.html">العودة إلى المتجر</a>
+                    <a href="index22.html" data-i18n="back_to_store">العودة إلى المتجر</a>
                 </div>
             </div>
         </div>
@@ -397,7 +415,7 @@
             cartItems.innerHTML = '';
             let total = 0;
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="empty-cart">السلة فارغة</p>';
+                cartItems.innerHTML = `<p class="empty-cart" data-i18n="cart_empty">${translations[localStorage.getItem('language') || 'ar'].cart_empty}</p>`;
             } else {
                 cart.forEach((item, index) => {
                     const itemTotal = item.price * item.quantity;
@@ -420,7 +438,7 @@
                     `;
                 });
             }
-            cartTotal.textContent = `المجموع: ${total}$`;
+            cartTotal.innerHTML = `<span data-i18n="total">${translations[localStorage.getItem('language') || 'ar'].total}</span>: ${total}$`;
             document.documentElement.style.setProperty('--cart-count', cart.reduce((sum, item) => sum + item.quantity, 0));
         }
 
@@ -507,6 +525,110 @@
         // تحميل السلة عند تحميل الصفحة
         updateCartDisplay();
 
+        // --- قاموس الترجمة ---
+        const translations = {
+            ar: {
+                logo: "كتب الفشن",
+                home: "الرئيسية",
+                store: "المتجر",
+                about: "من نحن",
+                contact: "تواصل معنا",
+                search_placeholder: "ابحث عن كتابك...",
+                cart_title: "السلة",
+                cart_empty: "السلة فارغة",
+                total: "المجموع",
+                checkout: "إتمام الدفع",
+                settings_title: "⚙️ إعدادات العرض",
+                theme: "الإضاءة",
+                font_size: "حجم الخط",
+                font_type: "نوع الخط",
+                line_height: "تباعد الأسطر",
+                primary_color: "لون التمييز",
+                bg_pattern: "نمط الخلفية",
+                language: "اللغة (Language)",
+                reset_settings: "إعادة ضبط الإعدادات ↺",
+                theme_vintage: "📜 عتيق",
+                theme_dark: "🌑 ليلي",
+                font_tajawal: "تجوال (الافتراضي)",
+                font_amiri: "أميري (نسخ)",
+                font_cairo: "كايرو (حديث)",
+                pattern_grid: "شبكة",
+                pattern_dots: "نقط",
+                pattern_lines: "خطوط",
+                pattern_none: "بدون",
+                lang_ar: "العربية",
+                lang_en: "English",
+                cart_page_title_1: "السلة",
+                cart_page_title_2: "المشتريات",
+                cart_page_desc: "مراجعة مشترياتك قبل الدفع.",
+                checkout_now: "الدفع الآن",
+                back_to_store: "العودة إلى المتجر",
+                modal_title: "بيانات الاستلام 🚚",
+                ph_name: "الاسم الثلاثي",
+                ph_age: "العمر",
+                ph_address: "العنوان بالتفصيل",
+                ph_phone: "رقم الواتساب (11 رقم)",
+                ph_payment: "اختر طريقة الدفع",
+                btn_confirm: "إرسال الطلب عبر واتساب"
+            },
+            en: {
+                logo: "Fashn Books",
+                home: "Home",
+                store: "Store",
+                about: "About Us",
+                contact: "Contact Us",
+                search_placeholder: "Search for your book...",
+                cart_title: "Cart",
+                cart_empty: "Cart is empty",
+                total: "Total",
+                checkout: "Checkout",
+                settings_title: "⚙️ Display Settings",
+                theme: "Theme",
+                font_size: "Font Size",
+                font_type: "Font Type",
+                line_height: "Line Height",
+                primary_color: "Primary Color",
+                bg_pattern: "Background Pattern",
+                language: "Language",
+                reset_settings: "Reset Settings ↺",
+                theme_vintage: "📜 Vintage",
+                theme_dark: "🌑 Dark",
+                font_tajawal: "Tajawal (Default)",
+                font_amiri: "Amiri (Naskh)",
+                font_cairo: "Cairo (Modern)",
+                pattern_grid: "Grid",
+                pattern_dots: "Dots",
+                pattern_lines: "Lines",
+                pattern_none: "None",
+                lang_ar: "Arabic",
+                lang_en: "English",
+                cart_page_title_1: "Shopping",
+                cart_page_title_2: "Cart",
+                cart_page_desc: "Review your purchases before checkout.",
+                checkout_now: "Checkout Now",
+                back_to_store: "Back to Store",
+                modal_title: "Delivery Details 🚚",
+                ph_name: "Full Name",
+                ph_age: "Age",
+                ph_address: "Detailed Address",
+                ph_phone: "WhatsApp Number",
+                ph_payment: "Choose Payment Method",
+                btn_confirm: "Send Order via WhatsApp"
+            }
+        };
+
+        function updateTranslations() {
+            const lang = localStorage.getItem('language') || 'ar';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+        }
+
         // --- إدارة الإعدادات (الثيم والخطوط) ---
         function setTheme(mode) {
             if (mode === 'dark') {
@@ -522,23 +644,54 @@
             }
         }
 
-        function setFontSize(size) {
-            document.body.style.fontSize = size + 'px';
-            localStorage.setItem('fontSize', size);
-        }
-
         function setFontFamily(font) {
             document.body.style.fontFamily = font;
             localStorage.setItem('fontFamily', font);
+        }
+        
+        function setPattern(pattern) {
+            const gridLayer = document.querySelector('.grid-layer');
+            if(!gridLayer) return;
+            localStorage.setItem('bgPattern', pattern);
+            gridLayer.style.backgroundImage = ''; gridLayer.style.backgroundSize = '';
+            const color = 'var(--border-color)'; 
+            if(pattern === 'grid') {
+                gridLayer.style.backgroundImage = `linear-gradient(to right, ${color} 1px, transparent 1px), linear-gradient(to bottom, ${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '60px 60px';
+            } else if(pattern === 'dots') {
+                gridLayer.style.backgroundImage = `radial-gradient(${color} 1px, transparent 1px)`;
+                gridLayer.style.backgroundSize = '20px 20px';
+            } else if(pattern === 'lines') {
+                gridLayer.style.backgroundImage = `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 0, transparent 50%)`;
+                gridLayer.style.backgroundSize = '30px 30px';
+            } else if(pattern === 'none') {
+                gridLayer.style.backgroundImage = 'none';
+            }
+        }
+        
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            if (lang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+                document.getElementById('btn-ar').classList.add('active');
+                document.getElementById('btn-en').classList.remove('active');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'en');
+                document.getElementById('btn-en').classList.add('active');
+                document.getElementById('btn-ar').classList.remove('active');
+            }
+            updateTranslations();
         }
 
         // تحميل الإعدادات
         const savedTheme = localStorage.getItem('theme') || 'old';
         setTheme(savedTheme);
-        const savedSize = localStorage.getItem('fontSize');
-        if(savedSize) { document.body.style.fontSize = savedSize + 'px'; document.getElementById('font-size-slider').value = savedSize; }
         const savedFont = localStorage.getItem('fontFamily');
         if(savedFont) { document.body.style.fontFamily = savedFont; document.getElementById('font-family-select').value = savedFont; }
+        const savedPattern = localStorage.getItem('bgPattern') || 'grid'; setPattern(savedPattern);
+        const savedLang = localStorage.getItem('language') || 'ar'; setLanguage(savedLang);
 
         // --- إخفاء شاشة التحميل ---
         window.addEventListener('load', () => {
@@ -550,22 +703,20 @@
         style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center;">
         <div
             style="background:var(--card-bg); padding:30px; border-radius:20px; border:1px solid var(--border-color); width:90%; max-width:400px; position:relative;">
-            <i class="fas fa-times" onclick="closeCheckout()"
-                style="position:absolute; top:20px; left:20px; cursor:pointer; color:#666;"></i>
-            <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;">بيانات الاستلام 🚚</h2>
+            <i class="fas fa-times" onclick="closeCheckout()" style="position:absolute; top:20px; left:20px; cursor:pointer; color:#666;"></i>
+            <h2 style="color:var(--primary); text-align:center; margin-bottom:20px;" data-i18n="modal_title">بيانات الاستلام 🚚</h2>
 
             <div style="display:flex; flex-direction:column; gap:15px;">
                 <input type="text" id="cust-name" placeholder="الاسم الثلاثي"
-                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;">
+                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;" data-i18n-ph="ph_name">
                 <input type="number" id="cust-age" placeholder="العمر"
-                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;">
+                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;" data-i18n-ph="ph_age">
                 <input type="text" id="cust-address" placeholder="العنوان بالتفصيل"
-                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;">
+                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;" data-i18n-ph="ph_address">
                 <input type="tel" id="cust-phone" placeholder="رقم الواتساب (11 رقم)"
-                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;">
+                    style="padding:12px; border-radius:10px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); outline:none;" data-i18n-ph="ph_phone">
 
-                <button onclick="confirmFinalOrder()" class="btn" style="width:100%; margin:0; padding:15px;">إرسال
-                    الطلب عبر واتساب</button>
+                <button onclick="confirmFinalOrder()" class="btn" style="width:100%; margin:0; padding:15px;" data-i18n="btn_confirm">إرسال الطلب عبر واتساب</button>
             </div>
         </div>
     </div>
