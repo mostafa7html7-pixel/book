@@ -63,6 +63,13 @@
             overflow-x: hidden;
         }
 
+        /* --- تأثير Blur للصور عند التحميل --- */
+        img[loading="lazy"] {
+            filter: blur(10px);
+            transition: filter 0.6s ease-in-out;
+        }
+        img.loaded { filter: blur(0); }
+
         /* --- لمسة احترافية: شريط تمرير مخصص --- */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #020202; }
@@ -1327,12 +1334,6 @@
             setTimeout(() => beam.remove(), 600);
         });
 
-        // تأثير الإضاءة التفاعلي مع الماوس
-        document.addEventListener('mousemove', (e) => {
-            document.documentElement.style.setProperty('--x', e.clientX + 'px');
-            document.documentElement.style.setProperty('--y', e.clientY + 'px');
-        });
-
         // --- 2. الربط مع الذاكرة المحلية ---
         let cart = [];
         try {
@@ -1470,7 +1471,7 @@
                     total += item.price * item.quantity;
                     cartItems.innerHTML += `
                     <div class="cart-item">
-                        <img src="${item.image}" alt="${item.title}">
+                        <img src="${item.image}" alt="${item.title}" loading="lazy">
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.title}</div>
                             <div class="cart-item-type">${item.type === 'paper' ? 'ورقي' : 'PDF'}</div>
@@ -1489,6 +1490,7 @@
             cartTotal.innerHTML = `<span>المجموع</span> <span style="color:var(--primary)">${total}$</span>`;
             const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
             document.documentElement.style.setProperty('--cart-count', `"${count}"`);
+            applyBlurEffectToImages(); // تطبيق التأثير على الصور الجديدة في السلة
         }
 
         function showNotification(title, type) {
@@ -1501,13 +1503,14 @@
 
         // --- 5. بيانات الكتب وعرضها ---
         const books = [
-            { id: 1, title: 'الكتاب مقابل السجائر', author: 'جورج أورويل', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'ناري 🔥' },
-            { id: 2, title: 'سبل تعزيز مبيعات الكتب', author: 'خبير مبيعات', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'جديد 🆕' },
-            { id: 3, title: 'كنز الطالب', author: 'مؤلف ديني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر طلباً 🚀' },
-            { id: 4, title: 'البرمجة الأساسية', author: 'مؤلف تقني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'مميز ✨' },
+            { id: 1, title: 'الكتاب مقابل السجائر', author: 'جورج أورويل', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'ناري 🔥', pdfUrl: 'https://www.noor-book.com/book/internal_download/e2c32106e71a7f034536062fc80a0eef10ba3922/1/57d23170a88f76235193c6e013db0532' },
+            { id: 2, title: 'سبل تعزيز مبيعات الكتب', author: 'خبير مبيعات', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'جديد 🆕', pdfUrl: 'https://www.noor-book.com/book/internal_download/e2c32106e71a7f034536062fc80a0eef10ba3922/1/57d23170a88f76235193c6e013db0532' },
+            { id: 3, title: 'كنز الطالب', author: 'مؤلف ديني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر طلباً 🚀', pdfUrl: 'https://www.noor-book.com/book/internal_download/e2c32106e71a7f034536062fc80a0eef10ba3922/1/57d23170a88f76235193c6e013db0532' },
+            { id: 4, title: 'البرمجة الأساسية', author: 'مؤلف تقني', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'مميز ✨', pdfUrl: 'https://www.noor-book.com/book/internal_download/5834941fb04a91b114948c9bbc9ef78466e63b85/1/82fa2a14c4f35e1b0e0ea4cfb4cda5e9' },
             { id: 5, title: 'رواية الغموض', author: 'أجاثا كريستي', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'تريند 📈' },
             { id: 6, title: 'دليل التصميم', author: 'مصمم جرافيك', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'تعليمية', categoryLabel: 'تعليمية', badge: 'حصري 💎' },
-            { id: 7, title: 'كتاب الفلسفة', author: 'فيلسوف معاصر', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر مبيعاً 📦' }
+            { id: 7, title: 'كتاب الفلسفة', author: 'فيلسوف معاصر', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'دينية', categoryLabel: 'دينية', badge: 'الأكثر مبيعاً 📦' },
+            { id: 8, title: 'الخيميائي', author: 'باولو كويلو', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmZBWXUFYSEz3ZFW7Fa7wtzKdtMgcPqNpWvQ&s', category: 'روايات', categoryLabel: 'روايات', badge: 'عالمي 🌍' }
         ];
 
         function displayBooks(booksToShow) {
@@ -1518,7 +1521,7 @@
                 bookCard.setAttribute('data-id', book.id);
                 bookCard.innerHTML = `
                 <div class="card-image">
-                    <img src="${book.image}" alt="${book.title}">
+                    <img src="${book.image}" alt="${book.title}" loading="lazy">
                     <div class="card-badge">
                         ${book.badge}
                     </div>
@@ -1528,7 +1531,7 @@
                     <h2 class="card-title">${book.title}</h2>
                     <p class="card-author">${book.author}</p>
                     <div class="card-actions">
-                        <button class="action-btn btn-pdf lightning-btn" onclick="downloadPdf('${book.title}')">
+                        <button class="action-btn btn-pdf lightning-btn" onclick="downloadPdf('${book.title}', '${book.pdfUrl || ''}')">
                             <span class="price-tag">مجانا</span>
                             <span>تحميل PDF <i class="fas fa-file-pdf"></i></span>
                         </button>
@@ -1541,6 +1544,7 @@
             `;
                 booksGrid.appendChild(bookCard);
             });
+            applyBlurEffectToImages(); // تطبيق التأثير على صور الكتب
         }
 
         // --- 6. الفلاتر والبحث ---
@@ -1567,13 +1571,49 @@
         });
 
         // --- دالة تحميل PDF (مباشر) ---
-        function downloadPdf(title) {
+        function downloadPdf(title, url) {
+            if (!url || url === 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'غير متاح',
+                    text: 'عذراً، رابط التحميل غير متوفر لهذا الكتاب حالياً.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                return;
+            }
             Swal.fire({
                 icon: 'success',
-                title: 'جاري التحميل...',
-                text: `بدأ تحميل كتاب: ${title}`,
-                timer: 2000,
-                showConfirmButton: false
+                title: 'جاهز للتحميل',
+                text: `هل تريد تحميل كتاب: ${title}؟`,
+                confirmButtonText: 'تحميل الآن 📥',
+                showCancelButton: true,
+                cancelButtonText: 'إلغاء',
+                confirmButtonColor: '#ff5e3a'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let timerInterval;
+                    Swal.fire({
+                        title: 'جاري تجهيز الرابط...',
+                        html: 'سيتم بدء التحميل خلال <b>3</b> ثواني.',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const b = Swal.getHtmlContainer().querySelector('b');
+                            timerInterval = setInterval(() => {
+                                b.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            window.open(url, '_blank');
+                        }
+                    });
+                }
             });
         }
 
@@ -1791,6 +1831,21 @@
         window.addEventListener('load', () => {
             document.body.classList.add('loaded');
         });
+
+        // --- تفعيل تأثير Blur للصور ---
+        function applyBlurEffectToImages() {
+            document.querySelectorAll('img[loading="lazy"]:not(.blur-handler)').forEach(img => {
+                img.classList.add('blur-handler'); // لمنع إضافة المستمع أكثر من مرة
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    }, { once: true });
+                }
+            });
+        }
+        // سيتم استدعاء الدالة تلقائياً بعد عرض الكتب وتحديث السلة
     </script>
 
     <div id="checkout-modal"

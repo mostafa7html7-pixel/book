@@ -46,6 +46,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg); color: var(--text-main); overflow-x: hidden; }
 
+        /* --- تأثير Blur للصور عند التحميل --- */
+        img[loading="lazy"] {
+            filter: blur(10px);
+            transition: filter 0.6s ease-in-out;
+        }
+        img.loaded { filter: blur(0); }
+
         .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, var(--card-bg) 0%, var(--bg) 100%); perspective: 1000px; }
         .grid-layer { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 60px 60px; transform: rotateX(50deg) rotateZ(-5deg); mask-image: radial-gradient(circle, black, transparent 85%); }
 
@@ -253,10 +260,6 @@
     <div class="bg-grid"><div class="grid-layer"></div></div>
 
     <header class="header">
-        <div class="mobile-search-bar" id="mobile-search-bar">
-            <input type="text" placeholder="ابحث عن كتابك..." id="mobile-search-input">
-        </div>
-
         <a href="index.html" class="logo">
             <span class="logo-txt">كتب الفشن</span>
             <div class="logo-box"><i class="fas fa-book-open"></i></div>
@@ -271,7 +274,6 @@
 
         <div style="display: flex; gap: 15px; align-items: center;">
             <div class="theme-toggle" id="theme-toggle"><i class="fas fa-sun"></i></div>
-            <div class="search-btn-mobile" id="search-btn-mobile"><i class="fas fa-search"></i></div>
             <div class="cart-btn" id="cart-btn"><i class="fas fa-shopping-cart"></i></div>
             <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
         </div>
@@ -384,7 +386,7 @@
                 <p data-i18n="about_p3">سواء كنت تبحث عن رواية تأخذك لعالم آخر، أو كتاب تعليمي يطور مهاراتك، أو مرجع ديني يثري روحك، ستجده لدينا.</p>
             </div>
             <div class="about-img-box">
-                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="مكتبة كتب">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" alt="مكتبة كتب" loading="lazy">
             </div>
         </div>
 
@@ -432,7 +434,7 @@
                     total += item.price * q;
                     cartItemsContainer.innerHTML += `
                         <div class="cart-item">
-                            <img src="${item.image}">
+                            <img src="${item.image}" loading="lazy">
                             <div class="cart-item-details">
                                 <div class="cart-item-title">${item.title}</div>
                                 <div class="cart-item-price">${item.price}$</div>
@@ -449,6 +451,7 @@
             cartTotalDisplay.innerHTML = `<span>المجموع</span> <span style="color:var(--primary)">${total}$</span>`;
             const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
             document.documentElement.style.setProperty('--cart-count', `"${count}"`);
+            applyBlurEffectToImages(); // تطبيق التأثير على الصور الجديدة في السلة
         }
 
         window.handleRemove = function(event, index) {
@@ -603,15 +606,6 @@
                 }
             };
         }
-        
-        // --- زر البحث للموبايل ---
-        const searchBtnMobile = document.getElementById('search-btn-mobile');
-        const mobileSearchBar = document.getElementById('mobile-search-bar');
-        if(searchBtnMobile){
-            searchBtnMobile.onclick = () => {
-                mobileSearchBar.classList.toggle('open');
-            };
-        }
 
         function resetSettings() {
             localStorage.removeItem('theme');
@@ -636,6 +630,21 @@
         window.addEventListener('load', () => {
             document.body.classList.add('loaded');
         });
+
+        // --- تفعيل تأثير Blur للصور ---
+        function applyBlurEffectToImages() {
+            document.querySelectorAll('img[loading="lazy"]:not(.blur-handler)').forEach(img => {
+                img.classList.add('blur-handler'); // لمنع إضافة المستمع أكثر من مرة
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    }, { once: true });
+                }
+            });
+        }
+        applyBlurEffectToImages(); // التشغيل الأولي
     </script>
 </body>
 </html>
